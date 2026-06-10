@@ -5,14 +5,18 @@ from config import (
     CONSULTING_FIRMS,
     CONSULTING_PENALTY,
     CURRENT_YEAR,
+    CV_SPEECH_ROBOTICS_KW,
+    CV_SPEECH_ROBOTICS_PENALTY,
     DATE_PATTERN,
     GHOST_COMPLETENESS_THRESHOLD,
     HONEYPOT_YEAR_BUFFER,
+    ML_AI_TITLE_KEYWORDS,
     NO_CODE_DAYS,
     NO_CODE_PENALTY,
     PRODUCTION_SIGNALS,
     REFERENCE_DATE,
     RESEARCHER_TITLE_KW,
+    RETRIEVAL_SIGNALS,
 )
 
 
@@ -133,6 +137,35 @@ def is_honeypot(candidate: dict) -> Tuple[bool, str]:
     return False, ""
 
 
+def _is_cv_speech_robotics_only(candidate: dict) -> bool:
+    has_cv_robotics = False
+    for sk in candidate.get("skills", []):
+        name = sk.get("name", "").lower().strip()
+        if any(kw in name for kw in CV_SPEECH_ROBOTICS_KW):
+            has_cv_robotics = True
+            break
+    if not has_cv_robotics:
+        title_text = " ".join(
+            (r.get("title", "") or "") for r in candidate.get("career_history", [])
+        ).lower()
+        if not any(kw in title_text for kw in CV_SPEECH_ROBOTICS_KW):
+            return False
+    desc_text = " ".join(
+        (r.get("description", "") or "") for r in candidate.get("career_history", [])
+    ).lower()
+    combined = desc_text + " " + " ".join(
+        sk.get("name", "").lower() for sk in candidate.get("skills", [])
+    )
+    if any(kw in combined for kw in RETRIEVAL_SIGNALS):
+        return False
+    title_text_all = " ".join(
+        (r.get("title", "") or "") for r in candidate.get("career_history", [])
+    ).lower()
+    if any(kw in title_text_all for kw in ML_AI_TITLE_KEYWORDS):
+        return True
+    return False
+
+
 def should_hard_penalize(candidate: dict) -> Tuple[float, str]:
     reasons = []
     penalty = 1.0
@@ -144,6 +177,10 @@ def should_hard_penalize(candidate: dict) -> Tuple[float, str]:
     if _is_no_code_18mo(candidate):
         penalty *= NO_CODE_PENALTY
         reasons.append("NO_CODE_18MO")
+
+    if _is_cv_speech_robotics_only(candidate):
+        penalty *= CV_SPEECH_ROBOTICS_PENALTY
+        reasons.append("CV_SPEECH_ROBOTICS_ONLY")
 
     if not reasons:
         return (1.0, "")

@@ -203,7 +203,7 @@ def compute_career_quality(candidate: dict) -> float:
     if median_tenure >= 36:
         score += 0.20
     elif median_tenure >= 24:
-        score += 0.12
+        score += 0.20
     elif median_tenure >= 18:
         score += 0.05
 

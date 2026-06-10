@@ -130,7 +130,7 @@ TIER_2_INSTITUTIONS = [
     "birla institute", "bitsat",
 ]
 
-HONEYPOT_YEAR_BUFFER = 2
+HONEYPOT_YEAR_BUFFER = 5
 GHOST_COMPLETENESS_THRESHOLD = 5
 
 DATE_PATTERN = re.compile(r"\b(19|20)\d{2}\b")
@@ -142,3 +142,11 @@ NO_CODE_DAYS = 548
 
 CONSULTING_PENALTY = 0.15
 NO_CODE_PENALTY = 0.80
+CV_SPEECH_ROBOTICS_PENALTY = 0.85
+
+CV_SPEECH_ROBOTICS_KW = [
+    "computer vision", "object detection", "image classification", "image segmentation",
+    "yolo", "cnn", "resnet", "efficientnet",
+    "speech", "asr", "speech-to-text", "text-to-speech", "whisper",
+    "robotics", "ros", "robot", "control",
+]
