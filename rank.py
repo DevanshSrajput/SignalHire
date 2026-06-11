@@ -1,6 +1,7 @@
 import csv
 import json
 import pickle
+import re
 import subprocess
 import sys
 import time
@@ -18,9 +19,39 @@ from config import (
 from evidence import generate_reasoning
 
 
-def load_candidates_by_ids(target_ids) -> dict:
-    """Single pass over the JSONL collecting all requested candidates,
-    instead of rescanning the 100K-line file once per id."""
+_CID_PATTERN = re.compile(rb'"candidate_id"\s*:\s*"([^"]+)"')
+
+
+def build_offset_index() -> dict:
+    """candidate_id -> byte offset of its line in the JSONL. One ~2s pass;
+    afterwards any candidate loads with a seek instead of a file scan."""
+    index = {}
+    with open(CANDIDATES_PATH, "rb") as f:
+        while True:
+            pos = f.tell()
+            line = f.readline()
+            if not line:
+                break
+            m = _CID_PATTERN.search(line)
+            if m:
+                index[m.group(1).decode("utf-8")] = pos
+    return index
+
+
+def load_candidates_by_ids(target_ids, offset_index: dict = None) -> dict:
+    """With an offset index: direct seeks per id. Without: a single pass
+    over the JSONL (never one scan per id)."""
+    if offset_index is not None:
+        found = {}
+        with open(CANDIDATES_PATH, "rb") as f:
+            for cid in target_ids:
+                pos = offset_index.get(cid)
+                if pos is None:
+                    continue
+                f.seek(pos)
+                found[cid] = json.loads(f.readline())
+        return found
+
     remaining = set(target_ids)
     found = {}
     with open(CANDIDATES_PATH, "r", encoding="utf-8") as f:

@@ -32,7 +32,7 @@ from engine import (
     top_k_indices,
 )
 from evidence import collect_evidence, generate_reasoning
-from rank import load_candidates_by_ids
+from rank import build_offset_index, load_candidates_by_ids
 
 st.set_page_config(
     page_title="RecruiterIQ",
@@ -113,9 +113,16 @@ def embed_text(text: str) -> np.ndarray:
     return get_model().encode(text, normalize_embeddings=True).astype(np.float32)
 
 
-@st.cache_data(show_spinner="Loading candidate profiles ...")
+@st.cache_resource(show_spinner="Indexing candidate file (one-time) ...")
+def get_offset_index() -> dict:
+    return build_offset_index()
+
+
+@st.cache_data(show_spinner=False)
 def cached_candidates(ids: tuple) -> dict:
-    return load_candidates_by_ids(ids)
+    # Seek-based loads: any shortlist (every slider move produces a new
+    # one) resolves in milliseconds instead of a full 487 MB file scan.
+    return load_candidates_by_ids(ids, get_offset_index())
 
 
 @st.cache_data(show_spinner="Building pool demographics (one-time pass) ...")
