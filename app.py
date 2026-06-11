@@ -71,7 +71,7 @@ def render_score_bars(scores_dict):
         ax.barh(label, val, color=colors[i % len(colors)], height=0.6)
         ax.text(val + 0.01, i, f"{val:.0%}", va="center", fontsize=9, color="#94A3B8")
     ax.set_xlim(0, 1)
-    ax.set_faceplace("#1A1D27")
+    ax.set_facecolor("#1A1D27")
     fig.patch.set_facecolor("#1A1D27")
     ax.tick_params(colors="#94A3B8", labelsize=8)
     for spine in ax.spines.values():
@@ -102,7 +102,7 @@ def main():
             placeholder="Paste job description or leave blank for default JD...",
         )
 
-        run_btn = st.button("Run Ranking", type="primary", use_container_width=True)
+        run_btn = st.button("Run Ranking", type="primary", width="stretch")
 
         st.divider()
         st.caption("System Status")
@@ -251,7 +251,7 @@ def main():
             st.metric("Total Disqualified", len(disqualified))
             if disqualified:
                 df = pd.DataFrame(disqualified)
-                st.dataframe(df, use_container_width=True, hide_index=True)
+                st.dataframe(df, width="stretch", hide_index=True)
             else:
                 st.info("No disqualified candidates found.")
 
@@ -277,7 +277,7 @@ def main():
                 st.metric("Total Disqualified", len(disqualified))
                 if disqualified:
                     df = pd.DataFrame(disqualified)
-                    st.dataframe(df, use_container_width=True, hide_index=True)
+                    st.dataframe(df, width="stretch", hide_index=True)
             else:
                 st.info("No data loaded.")
 
