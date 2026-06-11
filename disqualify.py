@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Optional, Tuple
 
@@ -137,18 +138,27 @@ def is_honeypot(candidate: dict) -> Tuple[bool, str]:
     return False, ""
 
 
+_CV_KW_PATTERN = re.compile(
+    r"\b(" + "|".join(re.escape(kw) for kw in CV_SPEECH_ROBOTICS_KW) + r")\b"
+)
+
+
+def _matches_any_kw(text: str) -> bool:
+    return bool(_CV_KW_PATTERN.search(text.lower()))
+
+
 def _is_cv_speech_robotics_only(candidate: dict) -> bool:
     has_cv_robotics = False
     for sk in candidate.get("skills", []):
         name = sk.get("name", "").lower().strip()
-        if any(kw in name for kw in CV_SPEECH_ROBOTICS_KW):
+        if _matches_any_kw(name):
             has_cv_robotics = True
             break
     if not has_cv_robotics:
         title_text = " ".join(
             (r.get("title", "") or "") for r in candidate.get("career_history", [])
-        ).lower()
-        if not any(kw in title_text for kw in CV_SPEECH_ROBOTICS_KW):
+        )
+        if not _matches_any_kw(title_text):
             return False
     desc_text = " ".join(
         (r.get("description", "") or "") for r in candidate.get("career_history", [])

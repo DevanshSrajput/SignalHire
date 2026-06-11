@@ -145,9 +145,11 @@ CONSULTING_PENALTY = 0.15
 NO_CODE_PENALTY = 0.80
 CV_SPEECH_ROBOTICS_PENALTY = 0.85
 
+# Matched with word boundaries (see disqualify._matches_any_kw) to avoid
+# false positives like "version control" -> "control" or "RPA robot" -> "robot".
 CV_SPEECH_ROBOTICS_KW = [
     "computer vision", "object detection", "image classification", "image segmentation",
-    "yolo", "cnn", "resnet", "efficientnet",
-    "speech", "asr", "speech-to-text", "text-to-speech", "whisper",
-    "robotics", "ros", "robot", "control",
+    "yolo", "cnn", "resnet", "efficientnet", "opencv",
+    "speech recognition", "asr", "speech-to-text", "text-to-speech", "whisper",
+    "robotics", "ros", "slam", "motion planning", "control systems", "autonomous",
 ]
