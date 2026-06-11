@@ -1,41 +1,65 @@
+"""RecruiterIQ — interactive candidate ranking dashboard.
+
+Re-ranking is live: precomputed artifacts make scoring 100K candidates a
+single matrix multiply, so weight sliders and custom job descriptions
+re-rank instantly without any pipeline rerun.
+"""
+
 import json
 import pickle
-import sys
-import time
-from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
 
 from config import (
     ARTIFACTS_DIR,
-    CANDIDATES_PATH,
-    SAMPLE_PATH,
-    OUTPUT_DIR,
+    EMBEDDING_MODEL,
     TOP_K,
     WEIGHTS,
+)
+from engine import (
+    SUBSCORE_ORDER,
+    build_matrices,
+    compute_scores,
+    mmr_rerank,
+    stability_analysis,
+    top_k_indices,
 )
 from evidence import collect_evidence, generate_reasoning
 from rank import load_candidates_by_ids
 
+st.set_page_config(
+    page_title="RecruiterIQ",
+    page_icon="🎯",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-@st.cache_data(show_spinner=False)
-def cached_candidates(ids: tuple) -> dict:
-    return load_candidates_by_ids(ids)
+ACCENT = "#4F8EF7"
+GREEN = "#3ECF8E"
+AMBER = "#F59E0B"
+RED = "#EF4444"
+MUTED = "#94A3B8"
 
-st.set_page_config(page_title="RecruiterIQ", layout="wide")
+SUBSCORE_LABELS = {
+    "technical_fit": "Technical fit",
+    "career_quality": "Career quality",
+    "availability_signal": "Availability",
+    "seniority_fit": "Seniority fit",
+    "semantic_similarity": "Semantic match",
+}
 
-SEED = 42
-np.random.seed(SEED)
 
+# ---------------------------------------------------------------- data layer
 
-@st.cache_resource
+@st.cache_resource(show_spinner="Loading artifacts ...")
 def load_artifacts():
     artifacts = {}
     artifacts["embeddings"] = np.load(str(ARTIFACTS_DIR / "embeddings.npy")).astype(np.float32)
-    artifacts["candidate_ids"] = np.load(str(ARTIFACTS_DIR / "candidate_ids.npy"), allow_pickle=True)
+    artifacts["candidate_ids"] = np.load(
+        str(ARTIFACTS_DIR / "candidate_ids.npy"), allow_pickle=True
+    )
     artifacts["jd_embedding"] = np.load(str(ARTIFACTS_DIR / "jd_embedding.npy")).astype(np.float32)
     with open(ARTIFACTS_DIR / "subscores.pkl", "rb") as f:
         artifacts["subscores"] = pickle.load(f)
@@ -44,250 +68,365 @@ def load_artifacts():
     return artifacts
 
 
-def compute_ranking(embeddings, candidate_ids, jd_embedding, subscores_dict, weights):
-    n = len(candidate_ids)
-    semantic_sim = embeddings @ jd_embedding
-    weight_vector = np.array(
-        [weights["technical_fit"], weights["career_quality"], weights["availability_signal"], weights["seniority_fit"]],
-        dtype=np.float32,
+@st.cache_resource(show_spinner="Packing score matrices ...")
+def get_matrices():
+    a = load_artifacts()
+    subscore_matrix, penalties = build_matrices(a["candidate_ids"], a["subscores"])
+    return subscore_matrix, penalties
+
+
+@st.cache_resource(show_spinner="Loading embedding model (first custom JD only) ...")
+def get_model():
+    from sentence_transformers import SentenceTransformer
+
+    # CPU is fine for embedding a single query string.
+    return SentenceTransformer(EMBEDDING_MODEL, device="cpu")
+
+
+@st.cache_data(show_spinner=False)
+def embed_text(text: str) -> np.ndarray:
+    return get_model().encode(text, normalize_embeddings=True).astype(np.float32)
+
+
+@st.cache_data(show_spinner="Loading candidate profiles ...")
+def cached_candidates(ids: tuple) -> dict:
+    return load_candidates_by_ids(ids)
+
+
+@st.cache_data(show_spinner=False)
+def cached_stability(weights_key: tuple, jd_key: str, k: int) -> dict:
+    a = load_artifacts()
+    subscore_matrix, penalties = get_matrices()
+    weights = dict(weights_key)
+    jd_emb = st.session_state.get("jd_embedding_override")
+    if jd_emb is None:
+        jd_emb = a["jd_embedding"]
+    semantic_sim = a["embeddings"] @ jd_emb
+    return stability_analysis(subscore_matrix, penalties, semantic_sim, weights, k)
+
+
+# ---------------------------------------------------------------- ui helpers
+
+def score_bar_html(label: str, value: float, color: str) -> str:
+    pct = max(0.0, min(float(value), 1.0)) * 100
+    return f"""
+    <div style="margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:{MUTED}">
+        <span>{label}</span><span>{value:.0%}</span>
+      </div>
+      <div style="background:#262b3d;border-radius:6px;height:8px">
+        <div style="background:{color};width:{pct:.1f}%;height:8px;border-radius:6px"></div>
+      </div>
+    </div>
+    """
+
+
+def chip(text: str, color: str = ACCENT, title: str = "") -> str:
+    return (
+        f'<span title="{title}" style="background:{color}22;color:{color};'
+        f"border:1px solid {color}55;border-radius:12px;padding:2px 10px;"
+        f'margin:2px;font-size:0.75rem;display:inline-block">{text}</span>'
     )
-    subscore_matrix = np.zeros((n, 4), dtype=np.float32)
-    penalty_multipliers = np.ones(n, dtype=np.float32)
-    for i, cid in enumerate(candidate_ids):
-        ss = subscores_dict.get(cid, {})
-        subscore_matrix[i, 0] = ss.get("technical_fit", 0.0)
-        subscore_matrix[i, 1] = ss.get("career_quality", 0.0)
-        subscore_matrix[i, 2] = ss.get("availability_signal", 0.0)
-        subscore_matrix[i, 3] = ss.get("seniority_fit", 0.0)
-        penalty_multipliers[i] = ss.get("penalty_multiplier", 1.0)
-    base_scores = subscore_matrix @ weight_vector
-    scores = penalty_multipliers * (base_scores + weights["semantic_similarity"] * semantic_sim)
-    top_indices = np.argpartition(-scores, TOP_K)[:TOP_K]
-    top_k_pairs = [(float(scores[i]), str(candidate_ids[i])) for i in top_indices]
-    top_k_pairs.sort(key=lambda x: (-round(x[0], 3), x[1]))
-    return top_k_pairs, subscore_matrix, scores
 
 
-def render_score_bars(scores_dict):
-    labels = list(scores_dict.keys())
-    values = list(scores_dict.values())
-    colors = ["#4F8EF7", "#3ECF8E", "#F59E0B", "#EF4444", "#94A3B8"]
-    fig, ax = plt.subplots(figsize=(6, 1.5))
-    for i, (label, val) in enumerate(zip(labels, values)):
-        ax.barh(label, val, color=colors[i % len(colors)], height=0.6)
-        ax.text(val + 0.01, i, f"{val:.0%}", va="center", fontsize=9, color="#94A3B8")
-    ax.set_xlim(0, 1)
-    ax.set_facecolor("#1A1D27")
-    fig.patch.set_facecolor("#1A1D27")
-    ax.tick_params(colors="#94A3B8", labelsize=8)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-    ax.set_xticks([])
-    st.pyplot(fig)
-    plt.close(fig)
+def stability_badge(freq: float) -> str:
+    if freq >= 0.90:
+        return chip(f"stable {freq:.0%}", GREEN, "Stays in top-100 under ±20% weight perturbation")
+    if freq >= 0.60:
+        return chip(f"moderate {freq:.0%}", AMBER, "Sensitive to weight choices")
+    return chip(f"fragile {freq:.0%}", RED, "Only in top-100 for some weightings")
 
+
+def normalized_weights() -> dict:
+    raw = {name: st.session_state.get(f"w_{name}", WEIGHTS[name]) for name in WEIGHTS}
+    total = sum(raw.values()) or 1.0
+    return {k: v / total for k, v in raw.items()}
+
+
+# ------------------------------------------------------------------- sidebar
+
+def render_sidebar(artifacts_ready: bool, n_candidates: int, n_disqualified: int) -> dict:
+    with st.sidebar:
+        st.markdown("## 🎯 RecruiterIQ")
+        st.caption("Live candidate ranking — every control re-ranks instantly.")
+
+        st.markdown("### Job description")
+        jd_text = st.text_area(
+            "Custom JD or natural-language query",
+            height=110,
+            placeholder='e.g. "RAG engineer, 5+ yrs, strong vector search, short notice"',
+            label_visibility="collapsed",
+        )
+        col_a, col_b = st.columns(2)
+        with col_a:
+            if st.button("Apply JD", type="primary", use_container_width=True, disabled=not jd_text.strip()):
+                st.session_state["jd_embedding_override"] = embed_text(jd_text.strip())
+                st.session_state["jd_label"] = jd_text.strip()[:60]
+        with col_b:
+            if st.button("Default JD", use_container_width=True):
+                st.session_state.pop("jd_embedding_override", None)
+                st.session_state.pop("jd_label", None)
+        if "jd_label" in st.session_state:
+            st.info(f'Ranking against: "{st.session_state["jd_label"]}…"')
+
+        st.markdown("### Signal weights")
+        st.caption("Drag to see the shortlist reshuffle live.")
+        for name in WEIGHTS:
+            st.slider(
+                SUBSCORE_LABELS[name],
+                min_value=0.0,
+                max_value=1.0,
+                value=float(WEIGHTS[name]),
+                step=0.01,
+                key=f"w_{name}",
+            )
+        weights = normalized_weights()
+        if st.button("Reset weights", use_container_width=True):
+            for name in WEIGHTS:
+                st.session_state[f"w_{name}"] = float(WEIGHTS[name])
+            st.rerun()
+        st.caption(
+            "Effective (normalized): "
+            + " · ".join(f"{SUBSCORE_LABELS[k].split()[0]} {v:.0%}" for k, v in weights.items())
+        )
+
+        st.markdown("### Shortlist")
+        diversity = st.slider(
+            "Relevance ↔ Diversity (MMR)",
+            min_value=0.0,
+            max_value=0.5,
+            value=0.0,
+            step=0.05,
+            help="0 = pure score ranking. Higher values penalize near-duplicate "
+            "profiles so the shortlist covers distinct candidate archetypes.",
+        )
+        anonymized = st.toggle(
+            "🕶️ Blind screening mode",
+            value=False,
+            help="Hides names, companies and institutions to reduce reviewer bias.",
+        )
+
+        st.divider()
+        if artifacts_ready:
+            c1, c2 = st.columns(2)
+            c1.metric("Candidates", f"{n_candidates:,}")
+            c2.metric("Disqualified", n_disqualified)
+        else:
+            st.warning("Artifacts not loaded — run `python precompute.py` first.")
+
+    return {"weights": weights, "diversity": diversity, "anonymized": anonymized}
+
+
+# ------------------------------------------------------------------ ranking
+
+def run_ranking(artifacts, weights: dict, diversity: float):
+    subscore_matrix, penalties = get_matrices()
+    jd_emb = st.session_state.get("jd_embedding_override")
+    if jd_emb is None:
+        jd_emb = artifacts["jd_embedding"]
+    semantic_sim = artifacts["embeddings"] @ jd_emb
+    scores = compute_scores(subscore_matrix, penalties, semantic_sim, weights)
+
+    if diversity > 0:
+        pool = top_k_indices(scores, TOP_K * 5)
+        lambda_rel = 1.0 - diversity
+        top_idx = mmr_rerank(pool, scores, artifacts["embeddings"], lambda_rel, TOP_K)
+        top_idx = np.array(top_idx)
+    else:
+        top_idx = top_k_indices(scores, TOP_K)
+
+    return top_idx, scores, semantic_sim, subscore_matrix
+
+
+# ------------------------------------------------------------ shortlist tab
+
+def candidate_display_name(cand: dict, rank: int, anonymized: bool) -> str:
+    profile = cand.get("profile", {})
+    if anonymized:
+        return f"Candidate #{rank:03d} — {profile.get('current_title', '?')}"
+    return (
+        f"{profile.get('anonymized_name', '?')} — "
+        f"{profile.get('current_title', '?')} @ {profile.get('current_company', '?')}"
+    )
+
+
+def render_evidence(ev: dict):
+    chips = []
+    for m in ev["matched"]:
+        color = GREEN if m["group"] == "must-have" else ACCENT
+        label = f"✓ {m['criterion']}"
+        if m["source"] == "skill":
+            label += f" ← {m['detail']}"
+        chips.append(chip(label, color, title=str(m.get("detail", ""))))
+    for miss in ev["missing_must_haves"]:
+        chips.append(chip(f"✗ {miss['criterion']}", RED, "Missing must-have"))
+    if ev["production"]:
+        kws = ", ".join(dict.fromkeys(h["keyword"] for h in ev["production"][:3]))
+        chips.append(chip(f"🚀 production: {kws}", AMBER))
+    st.markdown(" ".join(chips), unsafe_allow_html=True)
+
+    text_hits = [m for m in ev["matched"] if m["source"] == "text" and m["detail"]]
+    snippets = [h for h in ev["production"] if h["snippet"]][:1] + [
+        {"keyword": m["keyword"], "snippet": m["detail"]} for m in text_hits[:2]
+    ]
+    if snippets:
+        with st.container():
+            for s in snippets[:3]:
+                st.markdown(
+                    f'<div style="border-left:3px solid {ACCENT};padding:4px 10px;'
+                    f'margin:4px 0;color:{MUTED};font-size:0.8rem">'
+                    f'<b style="color:{ACCENT}">{s["keyword"]}</b>: "{s["snippet"]}"</div>',
+                    unsafe_allow_html=True,
+                )
+
+
+def render_shortlist(artifacts, top_idx, scores, semantic_sim, controls, stability):
+    ids = artifacts["candidate_ids"]
+    subs = artifacts["subscores"]
+    top_ids = [str(ids[i]) for i in top_idx]
+    candidates_by_id = cached_candidates(tuple(top_ids))
+
+    header_l, header_r = st.columns([3, 1])
+    with header_l:
+        st.subheader(f"Top {len(top_idx)} candidates")
+    with header_r:
+        show_n = st.selectbox("Show", [25, 50, 100], index=0, label_visibility="collapsed")
+
+    for rank_pos, i in enumerate(top_idx[:show_n]):
+        rank = rank_pos + 1
+        cid = str(ids[i])
+        cand = candidates_by_id.get(cid)
+        if cand is None:
+            continue
+        ss = subs.get(cid, {})
+        profile = cand.get("profile", {})
+        signals = cand.get("redrob_signals", {})
+        ev = collect_evidence(cand)
+
+        title_line = candidate_display_name(cand, rank, controls["anonymized"])
+        with st.expander(
+            f"#{rank}  ·  {title_line}  ·  score {scores[i]:.3f}",
+            expanded=(rank <= 3),
+        ):
+            col1, col2 = st.columns([1.1, 1.6])
+            with col1:
+                badge_bits = [stability_badge(stability.get(int(i), 0.0))]
+                penalty = ss.get("penalty_multiplier", 1.0)
+                if penalty < 1.0:
+                    badge_bits.append(chip(f"⚠ penalty ×{penalty:.2f}", RED))
+                if signals.get("open_to_work_flag"):
+                    badge_bits.append(chip("open to work", GREEN))
+                st.markdown(" ".join(badge_bits), unsafe_allow_html=True)
+
+                st.markdown(
+                    f"**{profile.get('years_of_experience', '?')} yrs** · "
+                    f"{'📍 ' + str(profile.get('location', '?')) if not controls['anonymized'] else '📍 hidden'}"
+                )
+                if not controls["anonymized"]:
+                    st.caption(profile.get("headline", "")[:120])
+                rr = signals.get("recruiter_response_rate", 0) or 0
+                notice = signals.get("notice_period_days", 90) or 90
+                st.markdown(
+                    f"Response rate **{rr:.0%}** · notice **{notice}d** · "
+                    f"interviews **{(signals.get('interview_completion_rate', 0) or 0):.0%}**"
+                )
+
+            with col2:
+                bars = [
+                    ("Technical fit", ss.get("technical_fit", 0), ACCENT),
+                    ("Career quality", ss.get("career_quality", 0), GREEN),
+                    ("Availability", ss.get("availability_signal", 0), AMBER),
+                    ("Seniority fit", ss.get("seniority_fit", 0), RED),
+                    ("Semantic match", float(semantic_sim[i]), MUTED),
+                ]
+                st.markdown(
+                    "".join(score_bar_html(l, v, c) for l, v, c in bars),
+                    unsafe_allow_html=True,
+                )
+
+            st.markdown("**Why this candidate** — evidence from the profile:")
+            render_evidence(ev)
+            st.caption(f"*{generate_reasoning(cand, ev)}*")
+
+
+# --------------------------------------------------------------- main layout
 
 def main():
-    st.title("RecruiterIQ")
-    st.caption("AI Candidate Ranking System — Redrob AI Challenge")
-
-    artifacts_ready = False
     try:
         artifacts = load_artifacts()
         artifacts_ready = True
     except Exception as e:
-        st.error(f"Artifacts not found: {e}. Run precompute.py first.")
+        artifacts = None
+        artifacts_ready = False
+        st.error(f"Artifacts not found ({e}). Run `python precompute.py` first.")
 
-    with st.sidebar:
-        st.header("Configuration")
-        mode = st.radio("Mode", ["Full Pipeline (100k)", "Demo (sample 10)"], index=0)
+    n = len(artifacts["candidate_ids"]) if artifacts_ready else 0
+    n_disq = len(artifacts["disqualified"]) if artifacts_ready else 0
+    controls = render_sidebar(artifacts_ready, n, n_disq)
 
-        jd_text = st.text_area(
-            "Job Description",
-            height=150,
-            placeholder="Paste job description or leave blank for default JD...",
-        )
+    st.title("RecruiterIQ")
+    st.caption(
+        "Explainable AI candidate ranking · 100K profiles re-ranked live · Redrob AI Challenge"
+    )
 
-        run_btn = st.button("Run Ranking", type="primary", width="stretch")
+    if not artifacts_ready:
+        st.stop()
 
-        st.divider()
-        st.caption("System Status")
-        if artifacts_ready:
-            n = len(artifacts["candidate_ids"])
-            st.success(f"Candidates: {n:,}")
-            disq_count = len(artifacts["disqualified"])
-            st.info(f"Disqualified: {disq_count}")
-        else:
-            st.warning("Artifacts not loaded")
+    top_idx, scores, semantic_sim, subscore_matrix = run_ranking(
+        artifacts, controls["weights"], controls["diversity"]
+    )
+    weights_key = tuple(sorted(controls["weights"].items()))
+    jd_key = st.session_state.get("jd_label", "__default__")
+    stability = cached_stability(weights_key, jd_key, TOP_K)
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Ranked Shortlist", "Score Explorer", "Methodology", "Disqualified"])
+    tab_shortlist, tab_method = st.tabs(["🏆 Shortlist", "📖 Methodology"])
 
-    if run_btn and artifacts_ready:
-        with st.spinner("Scoring candidates..."):
-            emb = artifacts["embeddings"]
-            ids = artifacts["candidate_ids"]
-            jd_emb = artifacts["jd_embedding"]
-            subs = artifacts["subscores"]
+    with tab_shortlist:
+        render_shortlist(artifacts, top_idx, scores, semantic_sim, controls, stability)
 
-            rank_pairs, subscore_matrix, all_scores = compute_ranking(emb, ids, jd_emb, subs, WEIGHTS)
+    with tab_method:
+        render_methodology(controls["weights"])
 
-        candidates_by_id = cached_candidates(tuple(cid for _, cid in rank_pairs))
 
-        with tab1:
-            st.subheader(f"Top {TOP_K} Candidates")
-            for rank_idx, (score_val, cid) in enumerate(rank_pairs):
-                rank = rank_idx + 1
-                cand = candidates_by_id.get(cid)
-                ss = subs.get(cid, {})
-                if cand is None:
-                    continue
+def render_methodology(weights: dict):
+    st.subheader("Composite score")
+    formula = " + ".join(
+        f"{weights[name]:.2f} × {SUBSCORE_LABELS[name].replace(' ', '_')}" for name in weights
+    )
+    st.code(f"S = penalty × ({formula})")
+    st.markdown(
+        """
+        | Signal | What it measures |
+        |---|---|
+        | Technical fit | JD must-haves (embeddings/retrieval, vector DBs, Python, eval) + nice-to-haves, weighted by declared proficiency and assessment scores |
+        | Career quality | Product-company history, median tenure, upward title progression |
+        | Availability | Open-to-work, recency, response rate, interview completion, notice period |
+        | Seniority fit | Ideal 6–9 yrs experience band, education tier bonus |
+        | Semantic match | MiniLM embedding cosine vs the JD — catches strong profiles that use plain language |
+        """
+    )
+    st.subheader("Integrity rules")
+    from config import (
+        CONSULTING_PENALTY,
+        CV_SPEECH_ROBOTICS_PENALTY,
+        GHOST_COMPLETENESS_THRESHOLD,
+        HONEYPOT_YEAR_BUFFER,
+        NO_CODE_PENALTY,
+    )
 
-                profile = cand.get("profile", {})
-                signals = cand.get("redrob_signals", {})
-
-                with st.expander(
-                    f"#{rank}  {profile.get('current_title', '?')} @ {profile.get('current_company', '?')}  —  Score: {score_val:.3f}",
-                    expanded=(rank <= 3),
-                ):
-                    col1, col2 = st.columns([1, 2])
-                    with col1:
-                        st.markdown(f"**Years Exp:** {profile.get('years_of_experience', '?')}")
-                        st.markdown(f"**Headline:** {profile.get('headline', '')[:100]}")
-                        st.markdown(f"**Location:** {profile.get('location', '?')}")
-                        st.markdown(f"**Open to work:** {'Yes' if signals.get('open_to_work_flag') else 'No'}")
-                        st.markdown(f"**Response rate:** {signals.get('recruiter_response_rate', 0):.0%}")
-                        st.markdown(f"**Notice:** {signals.get('notice_period_days', 90)}d")
-
-                    with col2:
-                        score_dict = {
-                            "Technical": ss.get("technical_fit", 0),
-                            "Career": ss.get("career_quality", 0),
-                            "Availability": ss.get("availability_signal", 0),
-                            "Seniority": ss.get("seniority_fit", 0),
-                            "Semantic": float(emb[ids == cid][0] @ jd_emb) if len(ids[ids == cid]) > 0 else 0,
-                        }
-                        render_score_bars(score_dict)
-
-                    reasoning = generate_reasoning(cand)
-                    st.caption(f"*{reasoning}*")
-
-        with tab2:
-            st.subheader("Score Distribution")
-            top_1000_scores = np.sort(all_scores)[-1000:]
-            fig, ax = plt.subplots(figsize=(10, 4))
-            ax.hist(top_1000_scores, bins=30, color="#4F8EF7", edgecolor="#1A1D27")
-            ax.axvline(x=all_scores[np.argpartition(-all_scores, TOP_K)[:TOP_K]].min(), color="#EF4444", linestyle="--", label="Top 100 cutoff")
-            ax.set_xlabel("Composite Score")
-            ax.set_ylabel("Count (top 1000)")
-            ax.set_facecolor("#1A1D27")
-            fig.patch.set_facecolor("#1A1D27")
-            ax.tick_params(colors="#94A3B8")
-            ax.spines["bottom"].set_color("#2D3148")
-            ax.spines["left"].set_color("#2D3148")
-            ax.legend()
-            st.pyplot(fig)
-            plt.close(fig)
-
-            st.subheader("Signal Correlation")
-            tech_scores = subscore_matrix[:, 0]
-            career_scores = subscore_matrix[:, 1]
-            avail_scores = subscore_matrix[:, 2]
-            senior_scores = subscore_matrix[:, 3]
-
-            fig2, axes = plt.subplots(1, 2, figsize=(12, 4))
-            axes[0].scatter(tech_scores, career_scores, c=avail_scores, cmap="viridis", alpha=0.3, s=5)
-            axes[0].set_xlabel("Technical Fit")
-            axes[0].set_ylabel("Career Quality")
-            axes[0].set_facecolor("#1A1D27")
-            axes[0].tick_params(colors="#94A3B8")
-            axes[0].spines["bottom"].set_color("#2D3148")
-            axes[0].spines["left"].set_color("#2D3148")
-
-            sc = axes[1].scatter(tech_scores, senior_scores, c=all_scores, cmap="plasma", alpha=0.3, s=5)
-            axes[1].set_xlabel("Technical Fit")
-            axes[1].set_ylabel("Seniority Fit")
-            axes[1].set_facecolor("#1A1D27")
-            axes[1].tick_params(colors="#94A3B8")
-            axes[1].spines["bottom"].set_color("#2D3148")
-            axes[1].spines["left"].set_color("#2D3148")
-
-            fig2.patch.set_facecolor("#1A1D27")
-            st.pyplot(fig2)
-            plt.close(fig2)
-
-        with tab3:
-            st.header("Methodology")
-            st.markdown("""
-            ### Composite Score Formula
-            ```
-            S = 0.35 × Technical_Fit
-              + 0.25 × Career_Quality
-              + 0.20 × Availability_Signal
-              + 0.12 × Seniority_Fit
-              + 0.08 × Semantic_Similarity
-            ```
-            All sub-scores normalized to [0, 1].
-            """)
-
-            st.markdown("### Scoring Signals")
-            st.markdown("""
-            | Signal | Weight | What it measures |
-            |---|---|---|
-            | Technical Fit | 0.35 | JD skill match (embeddings, vector DBs, Python, eval) |
-            | Career Quality | 0.25 | Product company history, tenure, progression |
-            | Availability | 0.20 | Open to work, response rate, notice period |
-            | Seniority Fit | 0.12 | YoE range 6-9 ideal, education tier bonus |
-            | Semantic Similarity | 0.08 | Embedding cosine vs JD — catches plain-language engineers |
-            """)
-
-            st.markdown("### Disqualification Rules")
-            st.markdown("""
-            - **Honeypot**: YoE > career timeline + buffer (2yr)
-            - **Ghost**: completeness < 5% + no verified email/phone
-            - **Consulting Penalty**: All-consulting career → 0.15× multiplier on composite
-            """)
-
-            st.markdown("### Pipeline")
-            st.markdown("""
-            1. **Precompute** (offline): Stream 100K JSONL → disqualify → embed (MiniLM-L6-v2) → sub-scores → serialize artifacts
-            2. **Ranking** (sandbox, <5min): Load artifacts → vectorized cosine → weighted composite → top 100 → reasoning → validated CSV
-            """)
-
-        with tab4:
-            st.subheader("Disqualified Candidates")
-            disqualified = artifacts.get("disqualified", [])
-            st.metric("Total Disqualified", len(disqualified))
-            if disqualified:
-                df = pd.DataFrame(disqualified)
-                st.dataframe(df, width="stretch", hide_index=True)
-            else:
-                st.info("No disqualified candidates found.")
-
-    elif run_btn and not artifacts_ready:
-        st.error("Cannot run ranking: artifacts not loaded. Run precompute.py first.")
-
-    if not run_btn:
-        with tab1:
-            st.info("Configure settings in the sidebar and click 'Run Ranking' to begin.")
-        with tab2:
-            st.info("Run ranking to see score distribution charts.")
-        with tab3:
-            st.info("See methodology below.")
-            st.markdown("""
-            ### Composite Score Formula
-            ```
-            S = 0.35 × Technical_Fit + 0.25 × Career_Quality + 0.20 × Availability_Signal + 0.12 × Seniority_Fit + 0.08 × Semantic_Similarity
-            ```
-            """)
-        with tab4:
-            if artifacts_ready:
-                disqualified = artifacts.get("disqualified", [])
-                st.metric("Total Disqualified", len(disqualified))
-                if disqualified:
-                    df = pd.DataFrame(disqualified)
-                    st.dataframe(df, width="stretch", hide_index=True)
-            else:
-                st.info("No data loaded.")
+    st.markdown(
+        f"""
+        - **Honeypot** (disqualified): claimed experience exceeds the career
+          timeline by more than **{HONEYPOT_YEAR_BUFFER} years**.
+        - **Ghost** (disqualified): profile completeness below
+          **{GHOST_COMPLETENESS_THRESHOLD}** with no verified email or phone.
+        - **Pure research** (disqualified): all roles are research titles with
+          zero production/deployment evidence.
+        - **All-consulting career**: composite ×**{CONSULTING_PENALTY}**.
+        - **No code shipped in 18 months**: composite ×**{NO_CODE_PENALTY}**.
+        - **CV/speech/robotics-only ML profile**: composite ×**{CV_SPEECH_ROBOTICS_PENALTY}**.
+        """
+    )
 
 
 if __name__ == "__main__":
