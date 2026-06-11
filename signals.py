@@ -23,9 +23,14 @@ from textmatch import matched_keywords, matches_keyword
 
 def _build_skill_dict(candidate: dict) -> Dict[str, float]:
     skills = candidate.get("skills", [])
-    assessment_scores = (
-        candidate.get("redrob_signals", {}).get("skill_assessment_scores", {}) or {}
-    )
+    # Assessment keys keep their original casing ("NLP", "Fine-tuning LLMs")
+    # while skill names are lowercased below — normalize so lookups hit.
+    assessment_scores = {
+        str(k).lower().strip(): v
+        for k, v in (
+            candidate.get("redrob_signals", {}).get("skill_assessment_scores", {}) or {}
+        ).items()
+    }
     result = {}
     for skill in skills:
         name = skill.get("name", "").lower().strip()
