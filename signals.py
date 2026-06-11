@@ -121,11 +121,15 @@ def _is_ml_ai_title(title: str) -> bool:
 
 
 def _parse_company_size(size_str) -> int:
+    """Upper bound of a size bucket: \"51-200\" -> 200, \"10001+\" -> 10002."""
     if not size_str:
         return 0
     s = str(size_str).strip()
-    if s == "1000+":
-        return 1001
+    if s.endswith("+"):
+        try:
+            return int(s[:-1]) + 1
+        except ValueError:
+            return 0
     if "-" in s:
         try:
             parts = s.split("-")
