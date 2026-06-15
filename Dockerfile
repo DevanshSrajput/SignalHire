@@ -12,5 +12,5 @@ COPY . .
 EXPOSE 8501
 
 # Sandbox default: produce the ranked submission.
-# For the dashboard: docker run -p 8501:8501 recruiteriq streamlit run app.py
+# For the dashboard: docker run -p 8501:8501 signalhire streamlit run app.py
 CMD ["python", "rank.py"]

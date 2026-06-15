@@ -1033,7 +1033,6 @@ We welcome contributions! Check out [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md)
 | 7 | Fix demographics cache invalidation | Medium | 1 hr |
 | 8 | Add pytest regression suite | Medium | 2–3 hrs |
 | 9 | Fix dashboard CSV tie-breaking per spec | Medium | 1 hr |
-| 10 | Complete RecruiterIQ → SignalHire rename | Easy | 30 min |
 
 ### Workflow
 

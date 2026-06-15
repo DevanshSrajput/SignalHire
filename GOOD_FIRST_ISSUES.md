@@ -147,16 +147,3 @@ tie-break by `candidate_id` ascending.
 **Done when:** the dashboard-exported CSV passes
 `python data/validate_submission.py <file>` including tie-break ordering for
 synthetic tied scores.
-
----
-
-## 10. 📝 `app.py` still says "RecruiterIQ" in page title
-
-**Difficulty:** trivial · **Files:** `app.py`
-
-The project was renamed from RecruiterIQ to SignalHire. The page title
-(line 38) and sidebar heading (line 225) still display the old name, plus
-the module docstring (line 1) and title (line 719).
-
-**Done when:** every visible "RecruiterIQ" string in `app.py` reads
-"SignalHire".

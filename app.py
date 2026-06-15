@@ -1,4 +1,4 @@
-"""RecruiterIQ — interactive candidate ranking dashboard.
+"""SignalHire — interactive candidate ranking dashboard.
 
 Re-ranking is live: precomputed artifacts make scoring 100K candidates a
 single matrix multiply, so weight sliders and custom job descriptions
@@ -38,7 +38,7 @@ from evidence import collect_evidence, generate_reasoning
 from rank import build_offset_index, load_candidates_by_ids
 
 st.set_page_config(
-    page_title="RecruiterIQ",
+    page_title="SignalHire",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -72,8 +72,33 @@ GLOBAL_CSS = """
     border-radius: 10px;
     background: #161925;
   }
-  button[data-baseweb="tab"] { font-size: 0.95rem; }
-  .stTabs [data-baseweb="tab-list"] { gap: 6px; }
+  .stTabs [data-baseweb="tab-list"] {
+    gap: 6px;
+    border-bottom: 1px solid #262b3d;
+  }
+  button[data-baseweb="tab"] {
+    font-size: 1rem;
+    font-weight: 600;
+    height: 44px;
+    padding: 0 18px;
+    background: #1A1D27;
+    border: 1px solid #262b3d;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: -1px;
+    color: #94A3B8;
+  }
+  button[data-baseweb="tab"]:hover {
+    color: #E2E8F0;
+    background: #20232f;
+  }
+  button[data-baseweb="tab"][aria-selected="true"] {
+    color: #FFFFFF;
+    background: #262b3d;
+    border-color: #4F8EF7;
+    box-shadow: inset 0 2px 0 #4F8EF7;
+  }
+  .stTabs [data-baseweb="tab-highlight"] { display: none; }
   h1 { letter-spacing: -0.02em; }
 </style>
 """
@@ -231,7 +256,7 @@ def _load_more(step: int):
 
 def render_sidebar(artifacts_ready: bool, n_candidates: int, n_disqualified: int) -> dict:
     with st.sidebar:
-        st.markdown("## 🎯 RecruiterIQ")
+        st.markdown("## 🎯 SignalHire")
         st.caption("Live candidate ranking — every control re-ranks instantly.")
 
         st.markdown("### Job description")
@@ -750,7 +775,7 @@ def main():
     controls = render_sidebar(artifacts_ready, n, n_disq)
 
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
-    st.title("🎯 RecruiterIQ")
+    st.title("🎯 SignalHire")
     st.caption(
         "Explainable AI candidate ranking · 100K profiles re-ranked live · Redrob AI Challenge"
     )
@@ -780,7 +805,15 @@ def main():
     )
 
     tabs = st.tabs(
-        ["🏆 Shortlist", "⚖️ Compare", "📊 Insights", "🛡️ Integrity", "📤 Export", "📖 Methodology"]
+        [
+            "🏆 Shortlist",
+            "⚖️ Compare",
+            "📊 Insights",
+            "🛡️ Integrity",
+            "📤 Export",
+            "📖 Methodology",
+            "💡 Why SignalHire?",
+        ]
     )
 
     with tabs[0]:
@@ -795,6 +828,8 @@ def main():
         render_export(artifacts, top_idx, scores, controls["weights"])
     with tabs[5]:
         render_methodology(controls["weights"])
+    with tabs[6]:
+        render_about()
 
 
 def render_methodology(weights: dict):
@@ -834,6 +869,40 @@ def render_methodology(weights: dict):
         - **All-consulting career**: composite ×**{CONSULTING_PENALTY}**.
         - **No code shipped in 18 months**: composite ×**{NO_CODE_PENALTY}**.
         - **CV/speech/robotics-only ML profile**: composite ×**{CV_SPEECH_ROBOTICS_PENALTY}**.
+        """
+    )
+
+
+def render_about():
+    st.subheader("💡 Why \"SignalHire\"?")
+    st.markdown(
+        """
+        Every candidate in the pool carries a stream of **signals** —
+        verified email and phone, profile completeness, recruiter response
+        rate, open-to-work status, skill assessment scores, and career
+        history — alongside the raw text of their profile.
+
+        On their own, none of these signals tell you who to **hire**. A
+        high response rate doesn't mean someone can do the job; a
+        keyword-stuffed profile doesn't mean they're available. The value
+        is in combining them: weighting each signal, cross-checking it
+        against the others, and surfacing the candidates where the signals
+        *agree*.
+
+        **SignalHire** is that combination — turning scattered profile
+        signals into a ranked, explainable hiring shortlist:
+
+        - 📡 **Signal** — every sub-score (technical fit, career quality,
+          availability, seniority, semantic match) is a signal extracted
+          from the candidate's data.
+        - 🔎 **Integrity checks** turn suspicious signals (honeypots, ghost
+          profiles, all-consulting careers) into disqualifications and
+          penalties, so noisy signals don't drown out real ones.
+        - 🎯 **Hire** — the end goal: a top-100 shortlist with evidence for
+          *why* each person made the cut, ready to act on.
+
+        In short: lots of weak signals, combined and explained, point to
+        the right hire.
         """
     )
 

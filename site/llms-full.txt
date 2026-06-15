@@ -1041,7 +1041,6 @@ We welcome contributions! Check out [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md)
 | 7 | Fix demographics cache invalidation | Medium | 1 hr |
 | 8 | Add pytest regression suite | Medium | 2–3 hrs |
 | 9 | Fix dashboard CSV tie-breaking per spec | Medium | 1 hr |
-| 10 | Complete RecruiterIQ → SignalHire rename | Easy | 30 min |
 
 ### Workflow
 
@@ -1256,19 +1255,6 @@ tie-break by `candidate_id` ascending.
 **Done when:** the dashboard-exported CSV passes
 `python data/validate_submission.py <file>` including tie-break ordering for
 synthetic tied scores.
-
----
-
-## 10. 📝 `app.py` still says "RecruiterIQ" in page title
-
-**Difficulty:** trivial · **Files:** `app.py`
-
-The project was renamed from RecruiterIQ to SignalHire. The page title
-(line 38) and sidebar heading (line 225) still display the old name, plus
-the module docstring (line 1) and title (line 719).
-
-**Done when:** every visible "RecruiterIQ" string in `app.py` reads
-"SignalHire".
 
 ---
 
@@ -3879,6 +3865,2376 @@ RecruiterIQ
 ---
 
 *RecruiterIQ UI/UX Design v1.0 · 2025*
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/_plotly_utils/)
+
+This package is for utilities that are used during code generation
+and at runtime.  The reason for not placing these under the main plotly/
+package is that this avoids the complications of importing the module
+we're generating code into during code generation.
+
+This module must be independent of (it must not import from) both
+plotly/ and codegen/
+
+---
+
+## [JupyterChart](/venv/lib/python3.14/site-packages/altair/jupyter/js/)
+
+# JupyterChart
+This directory contains the JavaScript portion of the Altair `JupyterChart`. The `JupyterChart` is based on the [AnyWidget](https://anywidget.dev/) project.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/cuda/pathfinder/)
+
+### The `cuda.pathfinder` documentation was moved
+
+Please see https://nvidia.github.io/cuda-python/cuda-pathfinder/latest/
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/httpcore-1.0.9.dist-info/licenses/LICENSE/)
+
+Copyright © 2020, [Encode OSS Ltd](https://www.encode.io/).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/httpx-0.28.1.dist-info/licenses/LICENSE/)
+
+Copyright © 2019, [Encode OSS Ltd](https://www.encode.io/).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [Dataset Card for {{ pretty_name | default("Dataset Name", true) }}](/venv/lib/python3.14/site-packages/huggingface_hub/templates/datasetcard_template/)
+
+---
+# For reference on dataset card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/datasetcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/datasets-cards
+{{ card_data }}
+---
+
+# Dataset Card for {{ pretty_name | default("Dataset Name", true) }}
+
+<!-- Provide a quick summary of the dataset. -->
+
+{{ dataset_summary | default("", true) }}
+
+## Dataset Details
+
+### Dataset Description
+
+<!-- Provide a longer summary of what this dataset is. -->
+
+{{ dataset_description | default("", true) }}
+
+- **Curated by:** {{ curators | default("[More Information Needed]", true)}}
+- **Funded by [optional]:** {{ funded_by | default("[More Information Needed]", true)}}
+- **Shared by [optional]:** {{ shared_by | default("[More Information Needed]", true)}}
+- **Language(s) (NLP):** {{ language | default("[More Information Needed]", true)}}
+- **License:** {{ license | default("[More Information Needed]", true)}}
+
+### Dataset Sources [optional]
+
+<!-- Provide the basic links for the dataset. -->
+
+- **Repository:** {{ repo | default("[More Information Needed]", true)}}
+- **Paper [optional]:** {{ paper | default("[More Information Needed]", true)}}
+- **Demo [optional]:** {{ demo | default("[More Information Needed]", true)}}
+
+## Uses
+
+<!-- Address questions around how the dataset is intended to be used. -->
+
+### Direct Use
+
+<!-- This section describes suitable use cases for the dataset. -->
+
+{{ direct_use | default("[More Information Needed]", true)}}
+
+### Out-of-Scope Use
+
+<!-- This section addresses misuse, malicious use, and uses that the dataset will not work well for. -->
+
+{{ out_of_scope_use | default("[More Information Needed]", true)}}
+
+## Dataset Structure
+
+<!-- This section provides a description of the dataset fields, and additional information about the dataset structure such as criteria used to create the splits, relationships between data points, etc. -->
+
+{{ dataset_structure | default("[More Information Needed]", true)}}
+
+## Dataset Creation
+
+### Curation Rationale
+
+<!-- Motivation for the creation of this dataset. -->
+
+{{ curation_rationale_section | default("[More Information Needed]", true)}}
+
+### Source Data
+
+<!-- This section describes the source data (e.g. news text and headlines, social media posts, translated sentences, ...). -->
+
+#### Data Collection and Processing
+
+<!-- This section describes the data collection and processing process such as data selection criteria, filtering and normalization methods, tools and libraries used, etc. -->
+
+{{ data_collection_and_processing_section | default("[More Information Needed]", true)}}
+
+#### Who are the source data producers?
+
+<!-- This section describes the people or systems who originally created the data. It should also include self-reported demographic or identity information for the source data creators if this information is available. -->
+
+{{ source_data_producers_section | default("[More Information Needed]", true)}}
+
+### Annotations [optional]
+
+<!-- If the dataset contains annotations which are not part of the initial data collection, use this section to describe them. -->
+
+#### Annotation process
+
+<!-- This section describes the annotation process such as annotation tools used in the process, the amount of data annotated, annotation guidelines provided to the annotators, interannotator statistics, annotation validation, etc. -->
+
+{{ annotation_process_section | default("[More Information Needed]", true)}}
+
+#### Who are the annotators?
+
+<!-- This section describes the people or systems who created the annotations. -->
+
+{{ who_are_annotators_section | default("[More Information Needed]", true)}}
+
+#### Personal and Sensitive Information
+
+<!-- State whether the dataset contains data that might be considered personal, sensitive, or private (e.g., data that reveals addresses, uniquely identifiable names or aliases, racial or ethnic origins, sexual orientations, religious beliefs, political opinions, financial or health data, etc.). If efforts were made to anonymize the data, describe the anonymization process. -->
+
+{{ personal_and_sensitive_information | default("[More Information Needed]", true)}}
+
+## Bias, Risks, and Limitations
+
+<!-- This section is meant to convey both technical and sociotechnical limitations. -->
+
+{{ bias_risks_limitations | default("[More Information Needed]", true)}}
+
+### Recommendations
+
+<!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
+
+{{ bias_recommendations | default("Users should be made aware of the risks, biases and limitations of the dataset. More information needed for further recommendations.", true)}}
+
+## Citation [optional]
+
+<!-- If there is a paper or blog post introducing the dataset, the APA and Bibtex information for that should go in this section. -->
+
+**BibTeX:**
+
+{{ citation_bibtex | default("[More Information Needed]", true)}}
+
+**APA:**
+
+{{ citation_apa | default("[More Information Needed]", true)}}
+
+## Glossary [optional]
+
+<!-- If relevant, include terms and calculations in this section that can help readers understand the dataset or dataset card. -->
+
+{{ glossary | default("[More Information Needed]", true)}}
+
+## More Information [optional]
+
+{{ more_information | default("[More Information Needed]", true)}}
+
+## Dataset Card Authors [optional]
+
+{{ dataset_card_authors | default("[More Information Needed]", true)}}
+
+## Dataset Card Contact
+
+{{ dataset_card_contact | default("[More Information Needed]", true)}}
+
+
+---
+
+## [Model Card for {{ model_id | default("Model ID", true) }}](/venv/lib/python3.14/site-packages/huggingface_hub/templates/modelcard_template/)
+
+---
+# For reference on model card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/modelcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/model-cards
+{{ card_data }}
+---
+
+# Model Card for {{ model_id | default("Model ID", true) }}
+
+<!-- Provide a quick summary of what the model is/does. -->
+
+{{ model_summary | default("", true) }}
+
+## Model Details
+
+### Model Description
+
+<!-- Provide a longer summary of what this model is. -->
+
+{{ model_description | default("", true) }}
+
+- **Developed by:** {{ developers | default("[More Information Needed]", true)}}
+- **Funded by [optional]:** {{ funded_by | default("[More Information Needed]", true)}}
+- **Shared by [optional]:** {{ shared_by | default("[More Information Needed]", true)}}
+- **Model type:** {{ model_type | default("[More Information Needed]", true)}}
+- **Language(s) (NLP):** {{ language | default("[More Information Needed]", true)}}
+- **License:** {{ license | default("[More Information Needed]", true)}}
+- **Finetuned from model [optional]:** {{ base_model | default("[More Information Needed]", true)}}
+
+### Model Sources [optional]
+
+<!-- Provide the basic links for the model. -->
+
+- **Repository:** {{ repo | default("[More Information Needed]", true)}}
+- **Paper [optional]:** {{ paper | default("[More Information Needed]", true)}}
+- **Demo [optional]:** {{ demo | default("[More Information Needed]", true)}}
+
+## Uses
+
+<!-- Address questions around how the model is intended to be used, including the foreseeable users of the model and those affected by the model. -->
+
+### Direct Use
+
+<!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
+
+{{ direct_use | default("[More Information Needed]", true)}}
+
+### Downstream Use [optional]
+
+<!-- This section is for the model use when fine-tuned for a task, or when plugged into a larger ecosystem/app -->
+
+{{ downstream_use | default("[More Information Needed]", true)}}
+
+### Out-of-Scope Use
+
+<!-- This section addresses misuse, malicious use, and uses that the model will not work well for. -->
+
+{{ out_of_scope_use | default("[More Information Needed]", true)}}
+
+## Bias, Risks, and Limitations
+
+<!-- This section is meant to convey both technical and sociotechnical limitations. -->
+
+{{ bias_risks_limitations | default("[More Information Needed]", true)}}
+
+### Recommendations
+
+<!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
+
+{{ bias_recommendations | default("Users (both direct and downstream) should be made aware of the risks, biases and limitations of the model. More information needed for further recommendations.", true)}}
+
+## How to Get Started with the Model
+
+Use the code below to get started with the model.
+
+{{ get_started_code | default("[More Information Needed]", true)}}
+
+## Training Details
+
+### Training Data
+
+<!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
+
+{{ training_data | default("[More Information Needed]", true)}}
+
+### Training Procedure
+
+<!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
+
+#### Preprocessing [optional]
+
+{{ preprocessing | default("[More Information Needed]", true)}}
+
+
+#### Training Hyperparameters
+
+- **Training regime:** {{ training_regime | default("[More Information Needed]", true)}} <!--fp32, fp16 mixed precision, bf16 mixed precision, bf16 non-mixed precision, fp16 non-mixed precision, fp8 mixed precision -->
+
+#### Speeds, Sizes, Times [optional]
+
+<!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
+
+{{ speeds_sizes_times | default("[More Information Needed]", true)}}
+
+## Evaluation
+
+<!-- This section describes the evaluation protocols and provides the results. -->
+
+### Testing Data, Factors & Metrics
+
+#### Testing Data
+
+<!-- This should link to a Dataset Card if possible. -->
+
+{{ testing_data | default("[More Information Needed]", true)}}
+
+#### Factors
+
+<!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
+
+{{ testing_factors | default("[More Information Needed]", true)}}
+
+#### Metrics
+
+<!-- These are the evaluation metrics being used, ideally with a description of why. -->
+
+{{ testing_metrics | default("[More Information Needed]", true)}}
+
+### Results
+
+{{ results | default("[More Information Needed]", true)}}
+
+#### Summary
+
+{{ results_summary | default("", true) }}
+
+## Model Examination [optional]
+
+<!-- Relevant interpretability work for the model goes here -->
+
+{{ model_examination | default("[More Information Needed]", true)}}
+
+## Environmental Impact
+
+<!-- Total emissions (in grams of CO2eq) and additional considerations, such as electricity usage, go here. Edit the suggested text below accordingly -->
+
+Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
+
+- **Hardware Type:** {{ hardware_type | default("[More Information Needed]", true)}}
+- **Hours used:** {{ hours_used | default("[More Information Needed]", true)}}
+- **Cloud Provider:** {{ cloud_provider | default("[More Information Needed]", true)}}
+- **Compute Region:** {{ cloud_region | default("[More Information Needed]", true)}}
+- **Carbon Emitted:** {{ co2_emitted | default("[More Information Needed]", true)}}
+
+## Technical Specifications [optional]
+
+### Model Architecture and Objective
+
+{{ model_specs | default("[More Information Needed]", true)}}
+
+### Compute Infrastructure
+
+{{ compute_infrastructure | default("[More Information Needed]", true)}}
+
+#### Hardware
+
+{{ hardware_requirements | default("[More Information Needed]", true)}}
+
+#### Software
+
+{{ software | default("[More Information Needed]", true)}}
+
+## Citation [optional]
+
+<!-- If there is a paper or blog post introducing the model, the APA and Bibtex information for that should go in this section. -->
+
+**BibTeX:**
+
+{{ citation_bibtex | default("[More Information Needed]", true)}}
+
+**APA:**
+
+{{ citation_apa | default("[More Information Needed]", true)}}
+
+## Glossary [optional]
+
+<!-- If relevant, include terms and calculations in this section that can help readers understand the model or model card. -->
+
+{{ glossary | default("[More Information Needed]", true)}}
+
+## More Information [optional]
+
+{{ more_information | default("[More Information Needed]", true)}}
+
+## Model Card Authors [optional]
+
+{{ model_card_authors | default("[More Information Needed]", true)}}
+
+## Model Card Contact
+
+{{ model_card_contact | default("[More Information Needed]", true)}}
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/idna-3.18.dist-info/licenses/LICENSE/)
+
+BSD 3-Clause License
+
+Copyright (c) 2013-2026, Kim Davies and contributors.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/narwhals-2.22.1.dist-info/licenses/LICENSE/)
+
+MIT License
+
+Copyright (c) 2024 to present, Marco Gorelli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/_core/src/npysort/x86-simd-sort/LICENSE/)
+
+BSD 3-Clause License
+
+Copyright (c) 2022, Intel. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/fft/pocketfft/LICENSE/)
+
+Copyright (C) 2010-2018 Max-Planck-Society
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+* Neither the name of the copyright holder nor the names of its contributors may
+  be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [NCSA Open Source License](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/LICENSE/)
+
+**This software is dual-licensed under the The University of Illinois/NCSA
+Open Source License (NCSA) and The 3-Clause BSD License**
+
+# NCSA Open Source License
+**Copyright (c) 2019 Kevin Sheppard. All rights reserved.**
+
+Developed by: Kevin Sheppard (<kevin.sheppard@economics.ox.ac.uk>,
+<kevin.k.sheppard@gmail.com>)
+[http://www.kevinsheppard.com](http://www.kevinsheppard.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal with
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimers.
+
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimers in the documentation and/or
+other materials provided with the distribution.
+
+Neither the names of Kevin Sheppard, nor the names of any contributors may be
+used to endorse or promote products derived from this Software without specific
+prior written permission.
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH
+THE SOFTWARE.**
+
+
+# 3-Clause BSD License
+**Copyright (c) 2019 Kevin Sheppard. All rights reserved.**
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+**THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.**
+
+# Components
+
+Many parts of this module have been derived from original sources, 
+often the algorithm's designer. Component licenses are located with 
+the component code.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/distributions/LICENSE/)
+
+## NumPy
+
+Copyright (c) 2005-2017, NumPy Developers.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+* Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+* Neither the name of the NumPy Developers nor the names of any
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+## Julia
+
+The ziggurat methods were derived from Julia.
+
+Copyright (c) 2009-2019: Jeff Bezanson, Stefan Karpinski, Viral B. Shah,
+and other contributors:
+
+https://github.com/JuliaLang/julia/contributors
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## [MT19937](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/mt19937/LICENSE/)
+
+# MT19937
+
+Copyright (c) 2003-2005, Jean-Sebastien Roy (js@jeannot.org)
+
+The rk_random and rk_seed functions algorithms and the original design of
+the Mersenne Twister RNG:
+
+  Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+
+  2. Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+
+  3. The names of its contributors may not be used to endorse or promote
+  products derived from this software without specific prior written
+  permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Original algorithm for the implementation of rk_interval function from
+Richard J. Wagner's implementation of the Mersenne Twister RNG, optimised by
+Magnus Jonsson.
+
+Constants used in the rk_double implementation by Isaku Wada.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## [PCG64](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/pcg64/LICENSE/)
+
+# PCG64
+
+## The MIT License
+
+PCG Random Number Generation for C.
+
+Copyright 2014 Melissa O'Neill <oneill@pcg-random.org>
+
+Permission is hereby granted, free of charge, to any person obtaining 
+a copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---
+
+## [PHILOX](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/philox/LICENSE/)
+
+# PHILOX
+
+Copyright 2010-2012, D. E. Shaw Research.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions, and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions, and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+
+* Neither the name of D. E. Shaw Research nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [SFC64](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/sfc64/LICENSE/)
+
+# SFC64
+
+## The MIT License
+
+Adapted from a C++ implementation of Chris Doty-Humphrey's SFC PRNG.
+
+https://gist.github.com/imneme/f1f7821f07cf76504a97f6537c818083
+
+Copyright (c) 2018 Melissa E. O'Neill
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+
+---
+
+## [SPLITMIX64](/venv/lib/python3.14/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/splitmix64/LICENSE/)
+
+# SPLITMIX64
+
+Written in 2015 by Sebastiano Vigna (vigna@acm.org)
+
+To the extent possible under law, the author has dedicated all copyright
+and related and neighboring rights to this software to the public domain
+worldwide. This software is distributed without any warranty.
+
+See <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+---
+
+## [NCSA Open Source License](/venv/lib/python3.14/site-packages/numpy/random/LICENSE/)
+
+**This software is dual-licensed under the The University of Illinois/NCSA
+Open Source License (NCSA) and The 3-Clause BSD License**
+
+# NCSA Open Source License
+**Copyright (c) 2019 Kevin Sheppard. All rights reserved.**
+
+Developed by: Kevin Sheppard (<kevin.sheppard@economics.ox.ac.uk>,
+<kevin.k.sheppard@gmail.com>)
+[http://www.kevinsheppard.com](http://www.kevinsheppard.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal with
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimers.
+
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimers in the documentation and/or
+other materials provided with the distribution.
+
+Neither the names of Kevin Sheppard, nor the names of any contributors may be
+used to endorse or promote products derived from this Software without specific
+prior written permission.
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH
+THE SOFTWARE.**
+
+
+# 3-Clause BSD License
+**Copyright (c) 2019 Kevin Sheppard. All rights reserved.**
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+**THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.**
+
+# Components
+
+Many parts of this module have been derived from original sources, 
+often the algorithm's designer. Component licenses are located with 
+the component code.
+
+
+---
+
+## [Add A Figure Factory to the Plotly [Python Library](https://plot.ly/python/)](/venv/lib/python3.14/site-packages/plotly/figure_factory/)
+
+# Add A Figure Factory to the Plotly [Python Library](https://plot.ly/python/)
+
+Note: we are generally NOT accepting new figure factories anymore. We'll keep this doc around for context and in case we decide to make an exception, but we've found that figure factories expand the scope of the library (and its maintenance burden) beyond what really makes sense, and generates confusion about how these figures relate to the underlying plotly.js objects.
+
+That doesn't mean this pattern is discouraged though, far from it! We encourage you to make more such high-level functions and share them with the community as separate PyPI packages, GitHub Gists, or posts on https://community.plotly.com.
+
+## What is a Figure Factory?
+In the Python Plotly Library:
+
+We have basic plot types that are created using the `plotly.graph_objs` module.
+These plot types include Scatter, Box and Bar types. For a complete list see the [graph_objs file](https://github.com/plotly/plotly.py/blob/master/plotly/graph_objs/graph_objs.py). They are the basis of the plots and charts instantiated by Plotly.
+
+To create a basic chart like this, first we create the `data` using the tools in `plotly.graph_objs` and then we plot it. For example:
+
+```
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+trace = go.Scatter(
+    x = [1, 2, 3],
+    y = [4, 5, 6],
+    mode = 'markers',
+)
+
+data = [trace]
+
+py.iplot(data, filename='new-scatter-plot')
+```
+
+There is another type of chart which uses these basic plot types to make other types of graphs, and these are the figure factories. These are wrappers that utilize the code from `plotly.graph_objs` to build charts that can use their structures. A good example of a figure factory is the [Scatterplot Matrix](https://plot.ly/python/scatterplot-matrix/) as it utilizes `go.Scatter`, `go.Box` and `go.Histogram`.
+
+So if you have ever wanted to contribute to the Plotly Python Library by adding a new chart type we don't have, now you can! This README will help you get started by cloning the plotly.py repo, forking a new branch, creating a new figure factory, and creating a new Pull Request to get feedback for merging. Just follow all these steps and you'll be ready to go.
+
+## Getting Started:
+1. In the Terminal, clone the `plotly.py` repo locally and then check out the master branch.
+
+```
+$ git clone git@github.com:plotly/plotly.py.git
+$ git fetch origin
+$ git checkout master
+```
+
+2. Create a new branch off the master branch and give it an appropriate name.
+
+```
+$ git checkout -b "add-ff-type"
+```
+
+## Create a figure_factory File
+1. Creating python file
+
+Move to the `plotly/figure_factory` directory in the `plotly.py` repo. To do this, open up the Terminal and execute the command:
+
+```
+cd plotly/figure_factory
+```
+
+By running `ls` in the Terminal, you will get a list of all files in your current directory. In the `plotly/figure_factory` directory there is an `__init__.py` file as well as a bunch of `_ff_type.py` files. Each figure factory chart gets its own python file, and the name of each of these python files are found in the `__init__.py` file.
+
+If you are making a chart called `foo`, then you must create `_foo.py` in this directory.
+
+
+2. Updating `__init__.py`
+
+The inside of the `__init__.py` looks like:
+
+```
+# Require that numpy exists for figure_factory
+import numpy
+
+from plotly.figure_factory._2d_density import create_2d_density
+from plotly.figure_factory._annotated_heatmap import create_annotated_heatmap
+from plotly.figure_factory._candlestick import create_candlestick
+...
+```
+
+Now add the following line to the end of `__init__.py`:
+
+```
+from plotly.figure_factory._foo import create_foo
+```
+
+3. The main function
+
+It's now time to write the main function `create_foo` that will be called directly by the user. It lives in `_foo.py` and has the form:
+
+```
+def create_foo(attribute1, attribute2=value, ...):
+    """
+    Returns figure for a foo plot.
+
+    :param (type) attribute1: description of 'attribute1'.
+    :param (type) attribute2: description of what 'attribute2' is.
+        Default = value
+    # ...
+
+    Example 1:
+    '''
+
+    '''
+
+    Example 2:
+    '''
+
+    '''
+    """
+    # code goes here
+    return fig
+```
+
+You _must_ include a documentation string in your function. A doc string is a block string that contains useful information about what the function does, the arguments of the function and their descriptions, and examples of this function in use. The doc string is displayed when the help method is run by a user: `help(create_foo)` or `create_foo?` in python.
+
+The parameters are listed in the doc string with the format
+```
+:param (param_type) param_name: description.
+```
+Afterwards, you must include examples which demonstrate the different capabilities and features of the function. For more information on proper doc string syntax see [PEP-257 page](https://www.python.org/dev/peps/pep-0257/).
+
+After the doc string, you will add the main code of your function which should result in returning the fig, i.e. `return fig`.
+
+```
+# create figure
+fig = create_foo(...)
+
+# plot figure
+py.iplot(fig, filename='my_figure')
+```
+
+The figure `fig` must be a Plotly Figure, meaning it must have the form `fig = graph_objs.Figure(data=data, layout=layout)`.
+
+4. Useful Tips
+
+It is often not a good idea to put all your code into your `create_foo()` function. It is best practice to not repeat yourself and this requires taking repeated blocks of code and putting them into a separate function.
+
+It is best to make all other functions besides `create_foo()` secret so a user cannot access them. This is done by placing a `_` before the name of the function, so `_aux_func()` for example.
+
+5. Tests
+
+Add unit tests in
+`tests/test_optional/test_figure_factory/test_figure_factory.py`.
+
+## Create a Pull Request
+
+Now add changes to your current local branch
+
+```
+$ git add -a
+```
+
+and commit these changes and write a commit message.
+
+```
+$ git commit -m "this is the work that I did"
+```
+
+After you have added and committed all of your changes to the local branch, it is time to create your PR for the Plotly team to review.
+
+```
+$ git push origin add-ff-type
+```
+
+## Be Part of the Discussion
+
+Go check out your newly pushed branch at https://github.com/plotly/plotly.py. If you have any other questions, check out the [Plotly Contributing Page](https://github.com/plotly/plotly.py/blob/master/CONTRIBUTING.md). Thanks for contributing to Plotly's Graphing Library!
+
+### Table of Current Figure Factories
+| Name              | Documentation                             | In GitHub     |
+| ----------------- | ----------------------------------------- | ------------- |
+| 2D Density        | https://plot.ly/python/density-plots/     |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_2d_density.py|
+| Annotated Heatmap | https://plot.ly/python/annotated_heatmap/ |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_annotated_heatmap.py|
+| Candlestick       | https://plot.ly/python/candlestick-charts/|https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_candlestick.py|
+| Dendrogram        | https://plot.ly/python/dendrogram/        |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_dendrogram.py|
+| Distplot          | https://plot.ly/python/distplot/          |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_distplot.py|
+| Facet Grid        | https://plot.ly/python/facet-plots/       |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_facet_grid.py|
+| Gantt             | https://plot.ly/python/gantt/             |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_gantt.py|
+| Ohlc              | https://plot.ly/python/ohlc-charts/       |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_ohlc.py|
+| Quiver            | https://plot.ly/python/quiver-plots/      |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_quiver.py|
+| Scatterplot Matrix| https://plot.ly/python/scatterplot-matrix/|https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_scatterplot.py|
+| Streamline        | https://plot.ly/python/streamline-plots/  |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_streamline.py|
+| Table             | https://plot.ly/python/table/             |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_table.py|
+| Trisurf           | https://plot.ly/python/trisurf/           |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_trisurf.py|
+| Violin            | https://plot.ly/python/violin-plot/       |https://github.com/plotly/plotly.py/blob/master/plotly/figure_factory/_violin.py|
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/pyarrow/tests/data/orc/)
+
+<!---
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+The ORC and JSON files come from the `examples` directory in the Apache ORC
+source tree:
+https://github.com/apache/orc/tree/main/examples
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/pyparsing/ai/best_practices/)
+
+<!-- 
+This file contains instructions for best practices for developing parsers with pyparsing, and can be used by AI agents
+when generating Python code using pyparsing.
+-->
+
+## Planning
+- If not provided or if target language definition is ambiguous, ask for examples of valid strings to be parsed
+- Before developing the pyparsing expressions, define a Backus-Naur Form definition and save this in docs/grammar.md. Update this document as changes are made in the parser.
+
+## Implementing
+- Import pyparsing using `import pyparsing as pp`, and use that for all pyparsing references.
+  - If referencing names from `pyparsing.common`, follow the pyparsing import with "ppc = pp.common" and use `ppc` as the namespace to access `pyparsing.common`.
+  - If referencing names from `pyparsing.unicode`, follow the pyparsing import with "ppu = pp.unicode" and use `ppu` as the namespace to access `pyparsing.unicode`.
+- When writing parsers that contain recursive elements (using `Forward()` or `infix_notation()`), immediately enable packrat parsing for performance: `pp.ParserElement.enable_packrat()` (call this right after importing pyparsing). See https://pyparsing-docs.readthedocs.io/en/latest/HowToUsePyparsing.html.
+  - For recursive grammars, define placeholders with `pp.Forward()` and assign later using the `<<=` operator; give Forwards meaningful names with `set_name()` to improve errors.
+- Use PEP8 method and argument names in the pyparsing API (`parse_string`, not `parseString`).
+- Do not include expressions for matching whitespace in the grammar. Pyparsing skips whitespace by default.
+- For line-oriented grammars where newlines are significant, set skippable whitespace to just spaces/tabs early: `pp.ParserElement.set_default_whitespace_chars(" \t")`, and define `NL = pp.LineEnd().suppress()` to handle line ends explicitly.
+- Prefer operator forms for readability: use +, |, ^, ~, etc., instead of explicit And/MatchFirst/Or/Not classes (see Usage notes in https://pyparsing-docs.readthedocs.io/en/latest/HowToUsePyparsing.html).
+- Use `set_name()` on all major grammar elements to support railroad diagramming and better error/debug output.
+- The grammar should be independently testable, without pulling in separate modules for data structures, evaluation, or command execution.
+- Use results names for robust access to parsed data fields; results names should be valid Python identifiers to support attribute-style access on returned ParseResults.
+  - Results names should take the place of numeric indexing into parsed results in most places.
+  - Define results names using call format not `set_results_name()`, example: `full_name = Word(alphas)("first_name") + Word(alphas)("last_name")`
+  - If adding results name to an expression that is contains one more sub-expressions with results names, the expression must be inclused in a Group.
+- Prefer `Keyword` over `Literal` for reserved words to avoid partial matches (e.g., `Keyword("for")` will not match the leading "for" in "format").
+  - Use `pp.CaselessKeyword`/`pp.CaselessLiteral` when keywords should match regardless of case.
+- When the full input must be consumed, call `parse_string` with `parse_all=True`.
+- If the grammar must handle comments, define an expression for them and use the `ignore()` method to skip them.
+  - Prefer built-ins like `pp.cpp_style_comment` and `pp.python_style_comment` for common comment syntaxes.
+- Use pyparsing `Group` to organize sub-expressions. Groups are also important for preserving results names when a sub-expression is used in a `OneOrMore` or `ZeroOrMore` expression.
+- Suppress punctuation tokens to keep results clean; a convenient pattern is `LBRACK, RBRACK, LBRACE, RBRACE, COLON = pp.Suppress.using_each("[]{}:")`.
+- For comma-separated sequences, prefer `pp.DelimitedList(...)`; wrap with `pp.Optional(...)` to allow empty lists or objects where appropriate.
+- For helper sub-expressions used only to build larger expressions, consider `set_name(None)` to keep result dumps uncluttered.
+- Use pyparsing `Each()` to define a list of elements that may occur in any order.
+  - The '&' operator is the operator form of Each and is often more readable when combining order-independent parts.
+- Use parse actions to do parse-time conversion of data from strings to useful data types.
+  - Use objects defined in pyparsing.common for common types like integer, real — these already have their conversion parse actions defined.
+  - For quoted strings, use `pp.dbl_quoted_string().set_parse_action(pp.remove_quotes)` to unquote automatically.
+  - Map reserved words to Python constants per this example for parsing "true" to auto-convert to a Python True: `pp.Keyword("true").set_parse_action(pp.replace_with(True))` (and similarly for false/null/etc.).
+  - When you want native Python containers from the parse, use `pp.Group(..., aslist=True)` for lists and `pp.Dict(..., asdict=True)` for dict-like data.
+- Use "using_each" with a list of keywords to define keyword constants, instead of separate assignments.
+- Choose the appropriate matching method:
+  - `parse_string()` parses from the start
+  - `search_string()` searches anywhere in the text
+  - `scan_string()` yields all matches with positions
+  - `transform_string()` is a convenience wrapper around `scan_string` to apply filters or transforms defined in parse actions, to perform batch transforms or conversions of expressions within a larger body of text
+- For line suffixes or directives, combine lookahead and slicing helpers: `pp.FollowedBy(...)` with `pp.rest_of_line`; when reusing a base expression with a different parse action, call `.copy()` before applying the new action to avoid side effects.
+- When defining a parser to be used in a REPL:
+  - add pyparsing `Tag()` elements of the form `Tag("command", <command-name>)` to each command definition to support model construction from parsed commands.
+  - define model classes using dataclasses, and use the "command" attribute in the parsed results to identify which model class to create. The model classes can then be used to construct the model from the ParseResults returned by parse_string(). Define the models in a separate parser_models.py file.
+- If defining the grammar as part of a Parser class, only the finished grammar needs to be implemented as an instance variable.
+- `ParseResults` support "in" testing for results names. Use "in" tests for the existence of results names, not `hasattr()`.
+- Avoid left recursion where possible. If you must support left-recursive grammars, enable it with `pp.ParserElement.enable_left_recursion()` and do not enable packrat at the same time (these modes are incompatible).
+- Use `pp.SkipTo` as a skipping expression to skip over arbitrary content.
+  - For example, `pp.SkipTo(pp.LineEnd())` will skip over all content until the end of the line; add a stop_on argument to SkipTo to stop skipping when a particular string is matched.
+  - Use `...` in place of simple SkipTo(expression)
+
+## Testing
+- Use the pyparsing `ParserElement.run_tests` method to run mini validation tests.
+  - Pass a single multiline string to `run_tests` to test the parser on multiple test input strings, each line is a separate test.
+  - You can add comments starting with "#" within the string passed to `run_tests` to document the individual test cases.
+  - To pass test input strings that span multiple lines, pass the test input strings as a list of strings.
+  - Pass `parse_all=True` to `run_tests` to test that the entire input is consumed.
+- When generating unit tests for the parser:
+  - generate tests that include presence and absence of optional elements
+  - use the methods in the mixin class pyparsing.testing.TestParseResultsAsserts to easily define expression, test input string, and expected results
+  - do not generate tests for invalid data
+
+## Debugging
+- If troubleshooting parse actions, use pyparsing's `trace_parse_action` decorator to echo arguments and return value
+- During development, call `pp.autoname_elements()` to auto-assign names to unnamed expressions to improve `dump()` and error messages.
+- Sub-expressions can be tested in isolation using `ParserElement.matches()`
+- When defined out of order, Literals can mistakenly match fragments: `Literal("for")` will match the leading "for" in "format". Can be corrected by using `Keyword` instead of `Literal`.
+- Dump the parsed results using `ParseResults.dump()`, `ParseResults.pprint()`, or `repr(ParseResults)`.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/scipy/fft/_pocketfft/LICENSE/)
+
+Copyright (C) 2010-2019 Max-Planck-Society
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+* Neither the name of the copyright holder nor the names of its contributors may
+  be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [{{ model_name if model_name else "Sentence Transformer model" }}](/venv/lib/python3.14/site-packages/sentence_transformers/base/model_card_template/)
+
+---
+# For reference on model card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/modelcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/model-cards
+{{ card_data }}
+---
+
+# {{ model_name if model_name else "Sentence Transformer model" }}
+
+This is a [sentence-transformers](https://www.SBERT.net) model{% if base_model %} finetuned from [{{ base_model }}](https://huggingface.co/{{ base_model }}){% else %} trained{% endif %}{% if train_datasets | selectattr("name") | list %} on {% if train_datasets | selectattr("name") | map(attribute="name") | join(", ") | length > 200 %}{{ train_datasets | length }}{% else %}the {% for dataset in (train_datasets | selectattr("name")) %}{% if dataset.id %}[{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }}){% else %}{{ dataset.name }}{% endif %}{% if not loop.last %}{% if loop.index == (train_datasets | selectattr("name") | list | length - 1) %} and {% else %}, {% endif %}{% endif %}{% endfor %}{% endif %} dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}{% endif %}. It maps sentences & paragraphs to a {{ output_dimensionality }}-dimensional dense vector space and can be used for {{ task_name }}.
+
+## Model Details
+
+### Model Description
+- **Model Type:** Sentence Transformer
+{% if base_model -%}
+    {%- if base_model_revision -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }}) <!-- at revision {{ base_model_revision }} -->
+    {%- else -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }})
+    {%- endif -%}
+{%- else -%}
+    <!-- - **Base model:** [Unknown](https://huggingface.co/unknown) -->
+{%- endif %}
+- **Maximum Sequence Length:** {{ model_max_length }} tokens
+- **Output Dimensionality:** {{ output_dimensionality }} dimensions
+- **Similarity Function:** {{ similarity_fn_name }}
+{% if supported_modalities -%}
+    - **Supported Modalit{{"ies" if supported_modalities | length > 1 else "y"}}:** {{ supported_modalities | join(", ") }}
+{%- endif %}
+{% if train_datasets | selectattr("name") | list -%}
+    - **Training Dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}:**
+    {%- for dataset in (train_datasets | selectattr("name")) %}
+        {%- if dataset.id %}
+    - [{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }})
+        {%- else %}
+    - {{ dataset.name }}
+        {%- endif %}
+    {%- endfor %}
+{%- else -%}
+    <!-- - **Training Dataset:** Unknown -->
+{%- endif %}
+{% if language -%}
+    - **Language{{"s" if language is not string and language | length > 1 else ""}}:**
+    {%- if language is string %} {{ language }}
+    {%- else %} {% for lang in language -%}
+            {{ lang }}{{ ", " if not loop.last else "" }}
+        {%- endfor %}
+    {%- endif %}
+{%- else -%}
+    <!-- - **Language:** Unknown -->
+{%- endif %}
+{% if license -%}
+    - **License:** {{ license }}
+{%- else -%}
+    <!-- - **License:** Unknown -->
+{%- endif %}
+
+### Model Sources
+
+- **Documentation:** [Sentence Transformers Documentation](https://sbert.net)
+- **Repository:** [Sentence Transformers on GitHub](https://github.com/huggingface/sentence-transformers)
+- **Hugging Face:** [Sentence Transformers on Hugging Face](https://huggingface.co/models?library=sentence-transformers)
+
+### Full Model Architecture
+
+```
+{{ model_string }}
+```
+
+## Usage
+
+### Direct Usage (Sentence Transformers)
+
+First install the Sentence Transformers library:
+
+```bash
+pip install -U sentence-transformers
+```
+Then you can load this model and run inference.
+{{ usage_snippet }}
+<!--
+### Direct Usage (Transformers)
+
+<details><summary>Click to see the direct usage in Transformers</summary>
+
+</details>
+-->
+
+<!--
+### Downstream Usage (Sentence Transformers)
+
+You can finetune this model on your own dataset.
+
+<details><summary>Click to expand</summary>
+
+</details>
+-->
+
+<!--
+### Out-of-Scope Use
+
+*List how the model may foreseeably be misused and address what users ought not to do with the model.*
+-->
+{% if eval_metrics %}
+## Evaluation
+
+### Metrics
+{% for metrics in eval_metrics %}
+#### {{ metrics.description }}
+{% if metrics.dataset_name %}
+* Dataset{% if metrics.dataset_name is not string and metrics.dataset_name | length > 1 %}s{% endif %}: {% if metrics.dataset_name is string -%}
+        `{{ metrics.dataset_name }}`
+    {%- else -%}
+        {%- for name in metrics.dataset_name -%}
+            `{{ name }}`
+            {%- if not loop.last -%}
+                {%- if loop.index == metrics.dataset_name | length - 1 %} and {% else -%}, {% endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endif %}
+* Evaluated with {% if metrics.class_name.startswith("sentence_transformers.") %}[<code>{{ metrics.class_name.split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sentence_transformer/evaluation.html#sentence_transformers.sentence_transformer.evaluation.{{ metrics.class_name.split(".")[-1] }}){% else %}<code>{{ metrics.class_name }}</code>{% endif %}{% if metrics.config_code %} with these parameters:
+{{ metrics.config_code }}{% endif %}
+
+{{ metrics.table }}
+{%- endfor %}{% endif %}
+<!--
+## Bias, Risks and Limitations
+
+*What are the known or foreseeable issues stemming from this model? You could also flag here known failure cases or weaknesses of the model.*
+-->
+
+<!--
+### Recommendations
+
+*What are recommendations with respect to the foreseeable issues? For example, filtering explicit content.*
+-->
+
+## Training Details
+{% for dataset_type, dataset_list in [("training", train_datasets), ("evaluation", eval_datasets)] %}{% if dataset_list %}
+### {{ dataset_type.title() }} Dataset{{"s" if dataset_list | length > 1 else ""}}
+{% for dataset in dataset_list %}{% if dataset_list | length > 3 %}<details><summary>{{ dataset['name'] or 'Unnamed Dataset' }}</summary>
+{% endif %}
+#### {{ dataset['name'] or 'Unnamed Dataset' }}
+{% if dataset['name'] %}
+* Dataset: {% if 'id' in dataset %}[{{ dataset['name'] }}](https://huggingface.co/datasets/{{ dataset['id'] }}){% else %}{{ dataset['name'] }}{% endif %}
+{%- if 'revision' in dataset and 'id' in dataset %} at [{{ dataset['revision'][:7] }}](https://huggingface.co/datasets/{{ dataset['id'] }}/tree/{{ dataset['revision'] }}){% endif %}{% endif %}
+{% if dataset['size'] %}* Size: {{ "{:,}".format(dataset['size']) }} {{ dataset_type }} samples
+{% endif %}* Columns: {% if dataset['columns'] | length == 1 %}{{ dataset['columns'][0] }}{% elif dataset['columns'] | length == 2 %}{{ dataset['columns'][0] }} and {{ dataset['columns'][1] }}{% else %}{{ dataset['columns'][:-1] | join(', ') }}, and {{ dataset['columns'][-1] }}{% endif %}
+{% if dataset['stats_table'] %}* Approximate statistics based on the first {{ [dataset['size'], 100] | min }} samples:
+{{ dataset['stats_table'] }}{% endif %}{% if dataset['examples_table'] %}* Samples:
+{{ dataset['examples_table'] }}{% endif %}* Loss: {% if dataset["loss"]["fullname"].startswith("sentence_transformers.") %}[<code>{{ dataset["loss"]["fullname"].split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sentence_transformer/losses.html#{{ dataset["loss"]["fullname"].split(".")[-1].lower() }}){% else %}<code>{{ dataset["loss"]["fullname"] }}</code>{% endif %}{% if "config_code" in dataset["loss"] %} with these parameters:
+{{ dataset["loss"]["config_code"] }}{% endif %}
+{% if dataset_list | length > 3 %}</details>
+{% endif %}{% endfor %}{% endif %}{% endfor -%}
+
+{% if all_hyperparameters %}
+### Training Hyperparameters
+{% if non_default_hyperparameters -%}
+#### Non-Default Hyperparameters
+
+{% for name, value in non_default_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}{%- endif %}
+#### All Hyperparameters
+<details><summary>Click to expand</summary>
+
+{% for name, value in all_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}
+</details>
+{% endif %}
+
+{%- if eval_lines %}
+### Training Logs
+{% if hide_eval_lines %}<details><summary>Click to expand</summary>
+
+{% endif -%}
+{{ eval_lines }}{% if explain_bold_in_eval %}
+* The bold row denotes the saved checkpoint.{% endif %}
+{%- if hide_eval_lines %}
+</details>{% endif %}
+{% endif %}
+
+{%- if co2_eq_emissions %}
+### Environmental Impact
+Carbon emissions were measured using [CodeCarbon](https://github.com/mlco2/codecarbon).
+- **Energy Consumed**: {{ "%.3f"|format(co2_eq_emissions["energy_consumed"]) }} kWh
+- **Carbon Emitted**: {{ "%.3f"|format(co2_eq_emissions["emissions"] / 1000) }} kg of CO2
+
+### Training Hardware
+- **On Cloud**: {{ "Yes" if co2_eq_emissions["on_cloud"] else "No" }}
+- **GPU Model**: {{ co2_eq_emissions["hardware_used"] or "No GPU used" }}
+- **CPU Model**: {{ co2_eq_emissions["cpu_model"] }}
+- **RAM Size**: {{ "%.2f"|format(co2_eq_emissions["ram_total_size"]) }} GB
+{% endif %}
+{%- if training_time is not none %}
+### Training Time
+- **Training**: {{ training_time }}
+{%- if evaluation_time is not none %}
+- **Evaluation**: {{ evaluation_time }}
+- **Total**: {{ total_time }}
+{%- endif %}
+{% endif %}
+### Framework Versions
+- Python: {{ version["python"] }}
+- Sentence Transformers: {{ version["sentence_transformers"] }}
+- Transformers: {{ version["transformers"] }}
+- PyTorch: {{ version["torch"] }}
+- Accelerate: {{ version["accelerate"] }}
+- Datasets: {{ version["datasets"] }}
+- Tokenizers: {{ version["tokenizers"] }}
+
+## Citation
+
+### BibTeX
+{% for loss_name, citation in citations.items() %}
+#### {{ loss_name }}
+```bibtex
+{{ citation | trim }}
+```
+{% endfor %}
+<!--
+## Glossary
+
+*Clearly define terms in order to be accessible across audiences.*
+-->
+
+<!--
+## Model Card Authors
+
+*Lists the people who create the model card, providing recognition and accountability for the detailed work that goes into its construction.*
+-->
+
+<!--
+## Model Card Contact
+
+*Provides a way for people who have updates to the Model Card, suggestions, or questions, to contact the Model Card authors.*
+-->
+
+
+---
+
+## [{{ model_name if model_name else "Cross Encoder model" }}](/venv/lib/python3.14/site-packages/sentence_transformers/cross_encoder/model_card_template/)
+
+---
+# For reference on model card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/modelcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/model-cards
+{{ card_data }}
+---
+
+# {{ model_name if model_name else "Cross Encoder model" }}
+
+This is a [Cross Encoder](https://www.sbert.net/docs/cross_encoder/usage/usage.html) model{% if base_model %} finetuned from [{{ base_model }}](https://huggingface.co/{{ base_model }}){% else %} trained{% endif %}{% if train_datasets | selectattr("name") | list %} on {% if train_datasets | selectattr("name") | map(attribute="name") | join(", ") | length > 200 %}{{ train_datasets | length }}{% else %}the {% for dataset in (train_datasets | selectattr("name")) %}{% if dataset.id %}[{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }}){% else %}{{ dataset.name }}{% endif %}{% if not loop.last %}{% if loop.index == (train_datasets | selectattr("name") | list | length - 1) %} and {% else %}, {% endif %}{% endif %}{% endfor %}{% endif %} dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}{% endif %} using the [sentence-transformers](https://www.SBERT.net) library. It computes scores for pairs of texts, which can be used for {{ task_name }}.
+
+## Model Details
+
+### Model Description
+- **Model Type:** Cross Encoder
+{% if base_model -%}
+    {%- if base_model_revision -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }}) <!-- at revision {{ base_model_revision }} -->
+    {%- else -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }})
+    {%- endif -%}
+{%- else -%}
+    <!-- - **Base model:** [Unknown](https://huggingface.co/unknown) -->
+{%- endif %}
+- **Maximum Sequence Length:** {{ model_max_length }} tokens
+- **Number of Output Labels:** {{ model_num_labels }} label{{ "s" if model_num_labels > 1 else "" }}
+{% if supported_modalities -%}
+    - **Supported Modalit{{"ies" if supported_modalities | length > 1 else "y"}}:** {{ supported_modalities | join(", ") }}
+{%- endif %}
+{% if train_datasets | selectattr("name") | list -%}
+    - **Training Dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}:**
+    {%- for dataset in (train_datasets | selectattr("name")) %}
+        {%- if dataset.id %}
+    - [{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }})
+        {%- else %}
+    - {{ dataset.name }}
+        {%- endif %}
+    {%- endfor %}
+{%- else -%}
+    <!-- - **Training Dataset:** Unknown -->
+{%- endif %}
+{% if language -%}
+    - **Language{{"s" if language is not string and language | length > 1 else ""}}:**
+    {%- if language is string %} {{ language }}
+    {%- else %} {% for lang in language -%}
+            {{ lang }}{{ ", " if not loop.last else "" }}
+        {%- endfor %}
+    {%- endif %}
+{%- else -%}
+    <!-- - **Language:** Unknown -->
+{%- endif %}
+{% if license -%}
+    - **License:** {{ license }}
+{%- else -%}
+    <!-- - **License:** Unknown -->
+{%- endif %}
+
+### Model Sources
+
+- **Documentation:** [Sentence Transformers Documentation](https://sbert.net)
+- **Documentation:** [Cross Encoder Documentation](https://www.sbert.net/docs/cross_encoder/usage/usage.html)
+- **Repository:** [Sentence Transformers on GitHub](https://github.com/huggingface/sentence-transformers)
+- **Hugging Face:** [Cross Encoders on Hugging Face](https://huggingface.co/models?library=sentence-transformers&other=cross-encoder)
+
+### Full Model Architecture
+
+```
+{{ model_string }}
+```
+
+## Usage
+
+### Direct Usage (Sentence Transformers)
+
+First install the Sentence Transformers library:
+
+```bash
+pip install -U sentence-transformers
+```
+
+Then you can load this model and run inference.
+{{ usage_snippet }}
+
+<!--
+### Direct Usage (Transformers)
+
+<details><summary>Click to see the direct usage in Transformers</summary>
+
+</details>
+-->
+
+<!--
+### Downstream Usage (Sentence Transformers)
+
+You can finetune this model on your own dataset.
+
+<details><summary>Click to expand</summary>
+
+</details>
+-->
+
+<!--
+### Out-of-Scope Use
+
+*List how the model may foreseeably be misused and address what users ought not to do with the model.*
+-->
+{% if eval_metrics %}
+## Evaluation
+
+### Metrics
+{% for metrics in eval_metrics %}
+#### {{ metrics.description }}
+{% if metrics.dataset_name %}
+* Dataset{% if metrics.dataset_name is not string and metrics.dataset_name | length > 1 %}s{% endif %}: {% if metrics.dataset_name is string -%}
+        `{{ metrics.dataset_name }}`
+    {%- else -%}
+        {%- for name in metrics.dataset_name -%}
+            `{{ name }}`
+            {%- if not loop.last -%}
+                {%- if loop.index == metrics.dataset_name | length - 1 %} and {% else -%}, {% endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endif %}
+* Evaluated with {% if metrics.class_name.startswith("sentence_transformers.") %}[<code>{{ metrics.class_name.split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/cross_encoder/evaluation.html#sentence_transformers.cross_encoder.evaluation.{{ metrics.class_name.split(".")[-1] }}){% else %}<code>{{ metrics.class_name }}</code>{% endif %}{% if metrics.config_code %} with these parameters:
+{{ metrics.config_code }}{% endif %}
+
+{{ metrics.table }}
+{%- endfor %}{% endif %}
+<!--
+## Bias, Risks and Limitations
+
+*What are the known or foreseeable issues stemming from this model? You could also flag here known failure cases or weaknesses of the model.*
+-->
+
+<!--
+### Recommendations
+
+*What are recommendations with respect to the foreseeable issues? For example, filtering explicit content.*
+-->
+
+## Training Details
+{% for dataset_type, dataset_list in [("training", train_datasets), ("evaluation", eval_datasets)] %}{% if dataset_list %}
+### {{ dataset_type.title() }} Dataset{{"s" if dataset_list | length > 1 else ""}}
+{% for dataset in dataset_list %}{% if dataset_list | length > 3 %}<details><summary>{{ dataset['name'] or 'Unnamed Dataset' }}</summary>
+{% endif %}
+#### {{ dataset['name'] or 'Unnamed Dataset' }}
+{% if dataset['name'] %}
+* Dataset: {% if 'id' in dataset %}[{{ dataset['name'] }}](https://huggingface.co/datasets/{{ dataset['id'] }}){% else %}{{ dataset['name'] }}{% endif %}
+{%- if 'revision' in dataset and 'id' in dataset %} at [{{ dataset['revision'][:7] }}](https://huggingface.co/datasets/{{ dataset['id'] }}/tree/{{ dataset['revision'] }}){% endif %}{% endif %}
+{% if dataset['size'] %}* Size: {{ "{:,}".format(dataset['size']) }} {{ dataset_type }} samples
+{% endif %}* Columns: {% if dataset['columns'] | length == 1 %}{{ dataset['columns'][0] }}{% elif dataset['columns'] | length == 2 %}{{ dataset['columns'][0] }} and {{ dataset['columns'][1] }}{% else %}{{ dataset['columns'][:-1] | join(', ') }}, and {{ dataset['columns'][-1] }}{% endif %}
+{% if dataset['stats_table'] %}* Approximate statistics based on the first {{ [dataset['size'], 100] | min }} samples:
+{{ dataset['stats_table'] }}{% endif %}{% if dataset['examples_table'] %}* Samples:
+{{ dataset['examples_table'] }}{% endif %}* Loss: {% if dataset["loss"]["fullname"].startswith("sentence_transformers.") %}[<code>{{ dataset["loss"]["fullname"].split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/cross_encoder/losses.html#{{ dataset["loss"]["fullname"].split(".")[-1].lower() }}){% else %}<code>{{ dataset["loss"]["fullname"] }}</code>{% endif %}{% if "config_code" in dataset["loss"] %} with these parameters:
+{{ dataset["loss"]["config_code"] }}{% endif %}
+{% if dataset_list | length > 3 %}</details>
+{% endif %}{% endfor %}{% endif %}{% endfor -%}
+
+{% if all_hyperparameters %}
+### Training Hyperparameters
+{% if non_default_hyperparameters -%}
+#### Non-Default Hyperparameters
+
+{% for name, value in non_default_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}{%- endif %}
+#### All Hyperparameters
+<details><summary>Click to expand</summary>
+
+{% for name, value in all_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}
+</details>
+{% endif %}
+
+{%- if eval_lines %}
+### Training Logs
+{% if hide_eval_lines %}<details><summary>Click to expand</summary>
+
+{% endif -%}
+{{ eval_lines }}{% if explain_bold_in_eval %}
+* The bold row denotes the saved checkpoint.{% endif %}
+{%- if hide_eval_lines %}
+</details>{% endif %}
+{% endif %}
+
+{%- if co2_eq_emissions %}
+### Environmental Impact
+Carbon emissions were measured using [CodeCarbon](https://github.com/mlco2/codecarbon).
+- **Energy Consumed**: {{ "%.3f"|format(co2_eq_emissions["energy_consumed"]) }} kWh
+- **Carbon Emitted**: {{ "%.3f"|format(co2_eq_emissions["emissions"] / 1000) }} kg of CO2
+
+### Training Hardware
+- **On Cloud**: {{ "Yes" if co2_eq_emissions["on_cloud"] else "No" }}
+- **GPU Model**: {{ co2_eq_emissions["hardware_used"] or "No GPU used" }}
+- **CPU Model**: {{ co2_eq_emissions["cpu_model"] }}
+- **RAM Size**: {{ "%.2f"|format(co2_eq_emissions["ram_total_size"]) }} GB
+{% endif %}
+{%- if training_time is not none %}
+### Training Time
+- **Training**: {{ training_time }}
+{%- if evaluation_time is not none %}
+- **Evaluation**: {{ evaluation_time }}
+- **Total**: {{ total_time }}
+{%- endif %}
+{% endif %}
+### Framework Versions
+- Python: {{ version["python"] }}
+- Sentence Transformers: {{ version["sentence_transformers"] }}
+- Transformers: {{ version["transformers"] }}
+- PyTorch: {{ version["torch"] }}
+- Accelerate: {{ version["accelerate"] }}
+- Datasets: {{ version["datasets"] }}
+- Tokenizers: {{ version["tokenizers"] }}
+
+## Additional Resources
+
+- [Training and Finetuning Reranker Models with Sentence Transformers](https://huggingface.co/blog/train-reranker): the end-to-end guide for training or finetuning Cross Encoder (reranker) models.
+- [Multimodal Embedding & Reranker Models with Sentence Transformers](https://huggingface.co/blog/multimodal-sentence-transformers): use text, image, audio, and video reranker models through the same API.
+- [Training and Finetuning Multimodal Embedding & Reranker Models with Sentence Transformers](https://huggingface.co/blog/train-multimodal-sentence-transformers): training multimodal Cross Encoders.
+
+## Citation
+
+### BibTeX
+{% for loss_name, citation in citations.items() %}
+#### {{ loss_name }}
+```bibtex
+{{ citation | trim }}
+```
+{% endfor %}
+<!--
+## Glossary
+
+*Clearly define terms in order to be accessible across audiences.*
+-->
+
+<!--
+## Model Card Authors
+
+*Lists the people who create the model card, providing recognition and accountability for the detailed work that goes into its construction.*
+-->
+
+<!--
+## Model Card Contact
+
+*Provides a way for people who have updates to the Model Card, suggestions, or questions, to contact the Model Card authors.*
+-->
+
+
+---
+
+## [{{ model_name if model_name else "Sentence Transformer model" }}](/venv/lib/python3.14/site-packages/sentence_transformers/sentence_transformer/model_card_template/)
+
+---
+# For reference on model card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/modelcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/model-cards
+{{ card_data }}
+---
+
+# {{ model_name if model_name else "Sentence Transformer model" }}
+
+This is a [sentence-transformers](https://www.SBERT.net) model{% if base_model %} finetuned from [{{ base_model }}](https://huggingface.co/{{ base_model }}){% else %} trained{% endif %}{% if train_datasets | selectattr("name") | list %} on {% if train_datasets | selectattr("name") | map(attribute="name") | join(", ") | length > 200 %}{{ train_datasets | length }}{% else %}the {% for dataset in (train_datasets | selectattr("name")) %}{% if dataset.id %}[{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }}){% else %}{{ dataset.name }}{% endif %}{% if not loop.last %}{% if loop.index == (train_datasets | selectattr("name") | list | length - 1) %} and {% else %}, {% endif %}{% endif %}{% endfor %}{% endif %} dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}{% endif %}. It maps sentences & paragraphs to a {{ output_dimensionality }}-dimensional dense vector space and can be used for {{ task_name }}.
+
+## Model Details
+
+### Model Description
+- **Model Type:** Sentence Transformer
+{% if base_model -%}
+    {%- if base_model_revision -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }}) <!-- at revision {{ base_model_revision }} -->
+    {%- else -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }})
+    {%- endif -%}
+{%- else -%}
+    <!-- - **Base model:** [Unknown](https://huggingface.co/unknown) -->
+{%- endif %}
+- **Maximum Sequence Length:** {{ model_max_length }} tokens
+- **Output Dimensionality:** {{ output_dimensionality }} dimensions
+- **Similarity Function:** {{ similarity_fn_name }}
+{% if supported_modalities -%}
+    - **Supported Modalit{{"ies" if supported_modalities | length > 1 else "y"}}:** {{ supported_modalities | join(", ") }}
+{%- endif %}
+{% if train_datasets | selectattr("name") | list -%}
+    - **Training Dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}:**
+    {%- for dataset in (train_datasets | selectattr("name")) %}
+        {%- if dataset.id %}
+    - [{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }})
+        {%- else %}
+    - {{ dataset.name }}
+        {%- endif %}
+    {%- endfor %}
+{%- else -%}
+    <!-- - **Training Dataset:** Unknown -->
+{%- endif %}
+{% if language -%}
+    - **Language{{"s" if language is not string and language | length > 1 else ""}}:**
+    {%- if language is string %} {{ language }}
+    {%- else %} {% for lang in language -%}
+            {{ lang }}{{ ", " if not loop.last else "" }}
+        {%- endfor %}
+    {%- endif %}
+{%- else -%}
+    <!-- - **Language:** Unknown -->
+{%- endif %}
+{% if license -%}
+    - **License:** {{ license }}
+{%- else -%}
+    <!-- - **License:** Unknown -->
+{%- endif %}
+
+### Model Sources
+
+- **Documentation:** [Sentence Transformers Documentation](https://sbert.net)
+- **Repository:** [Sentence Transformers on GitHub](https://github.com/huggingface/sentence-transformers)
+- **Hugging Face:** [Sentence Transformers on Hugging Face](https://huggingface.co/models?library=sentence-transformers)
+
+### Full Model Architecture
+
+```
+{{ model_string }}
+```
+
+## Usage
+
+### Direct Usage (Sentence Transformers)
+
+First install the Sentence Transformers library:
+
+```bash
+pip install -U sentence-transformers
+```
+Then you can load this model and run inference.
+{{ usage_snippet }}
+<!--
+### Direct Usage (Transformers)
+
+<details><summary>Click to see the direct usage in Transformers</summary>
+
+</details>
+-->
+
+<!--
+### Downstream Usage (Sentence Transformers)
+
+You can finetune this model on your own dataset.
+
+<details><summary>Click to expand</summary>
+
+</details>
+-->
+
+<!--
+### Out-of-Scope Use
+
+*List how the model may foreseeably be misused and address what users ought not to do with the model.*
+-->
+{% if eval_metrics %}
+## Evaluation
+
+### Metrics
+{% for metrics in eval_metrics %}
+#### {{ metrics.description }}
+{% if metrics.dataset_name %}
+* Dataset{% if metrics.dataset_name is not string and metrics.dataset_name | length > 1 %}s{% endif %}: {% if metrics.dataset_name is string -%}
+        `{{ metrics.dataset_name }}`
+    {%- else -%}
+        {%- for name in metrics.dataset_name -%}
+            `{{ name }}`
+            {%- if not loop.last -%}
+                {%- if loop.index == metrics.dataset_name | length - 1 %} and {% else -%}, {% endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endif %}
+* Evaluated with {% if metrics.class_name.startswith("sentence_transformers.") %}[<code>{{ metrics.class_name.split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sentence_transformer/evaluation.html#sentence_transformers.sentence_transformer.evaluation.{{ metrics.class_name.split(".")[-1] }}){% else %}<code>{{ metrics.class_name }}</code>{% endif %}{% if metrics.config_code %} with these parameters:
+{{ metrics.config_code }}{% endif %}
+
+{{ metrics.table }}
+{%- endfor %}{% endif %}
+<!--
+## Bias, Risks and Limitations
+
+*What are the known or foreseeable issues stemming from this model? You could also flag here known failure cases or weaknesses of the model.*
+-->
+
+<!--
+### Recommendations
+
+*What are recommendations with respect to the foreseeable issues? For example, filtering explicit content.*
+-->
+
+## Training Details
+{% for dataset_type, dataset_list in [("training", train_datasets), ("evaluation", eval_datasets)] %}{% if dataset_list %}
+### {{ dataset_type.title() }} Dataset{{"s" if dataset_list | length > 1 else ""}}
+{% for dataset in dataset_list %}{% if dataset_list | length > 3 %}<details><summary>{{ dataset['name'] or 'Unnamed Dataset' }}</summary>
+{% endif %}
+#### {{ dataset['name'] or 'Unnamed Dataset' }}
+{% if dataset['name'] %}
+* Dataset: {% if 'id' in dataset %}[{{ dataset['name'] }}](https://huggingface.co/datasets/{{ dataset['id'] }}){% else %}{{ dataset['name'] }}{% endif %}
+{%- if 'revision' in dataset and 'id' in dataset %} at [{{ dataset['revision'][:7] }}](https://huggingface.co/datasets/{{ dataset['id'] }}/tree/{{ dataset['revision'] }}){% endif %}{% endif %}
+{% if dataset['size'] %}* Size: {{ "{:,}".format(dataset['size']) }} {{ dataset_type }} samples
+{% endif %}* Columns: {% if dataset['columns'] | length == 1 %}{{ dataset['columns'][0] }}{% elif dataset['columns'] | length == 2 %}{{ dataset['columns'][0] }} and {{ dataset['columns'][1] }}{% else %}{{ dataset['columns'][:-1] | join(', ') }}, and {{ dataset['columns'][-1] }}{% endif %}
+{% if dataset['stats_table'] %}* Approximate statistics based on the first {{ [dataset['size'], 100] | min }} samples:
+{{ dataset['stats_table'] }}{% endif %}{% if dataset['examples_table'] %}* Samples:
+{{ dataset['examples_table'] }}{% endif %}* Loss: {% if dataset["loss"]["fullname"].startswith("sentence_transformers.") %}[<code>{{ dataset["loss"]["fullname"].split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sentence_transformer/losses.html#{{ dataset["loss"]["fullname"].split(".")[-1].lower() }}){% else %}<code>{{ dataset["loss"]["fullname"] }}</code>{% endif %}{% if "config_code" in dataset["loss"] %} with these parameters:
+{{ dataset["loss"]["config_code"] }}{% endif %}
+{% if dataset_list | length > 3 %}</details>
+{% endif %}{% endfor %}{% endif %}{% endfor -%}
+
+{% if all_hyperparameters %}
+### Training Hyperparameters
+{% if non_default_hyperparameters -%}
+#### Non-Default Hyperparameters
+
+{% for name, value in non_default_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}{%- endif %}
+#### All Hyperparameters
+<details><summary>Click to expand</summary>
+
+{% for name, value in all_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}
+</details>
+{% endif %}
+
+{%- if eval_lines %}
+### Training Logs
+{% if hide_eval_lines %}<details><summary>Click to expand</summary>
+
+{% endif -%}
+{{ eval_lines }}{% if explain_bold_in_eval %}
+* The bold row denotes the saved checkpoint.{% endif %}
+{%- if hide_eval_lines %}
+</details>{% endif %}
+{% endif %}
+
+{%- if co2_eq_emissions %}
+### Environmental Impact
+Carbon emissions were measured using [CodeCarbon](https://github.com/mlco2/codecarbon).
+- **Energy Consumed**: {{ "%.3f"|format(co2_eq_emissions["energy_consumed"]) }} kWh
+- **Carbon Emitted**: {{ "%.3f"|format(co2_eq_emissions["emissions"] / 1000) }} kg of CO2
+
+### Training Hardware
+- **On Cloud**: {{ "Yes" if co2_eq_emissions["on_cloud"] else "No" }}
+- **GPU Model**: {{ co2_eq_emissions["hardware_used"] or "No GPU used" }}
+- **CPU Model**: {{ co2_eq_emissions["cpu_model"] }}
+- **RAM Size**: {{ "%.2f"|format(co2_eq_emissions["ram_total_size"]) }} GB
+{% endif %}
+{%- if training_time is not none %}
+### Training Time
+- **Training**: {{ training_time }}
+{%- if evaluation_time is not none %}
+- **Evaluation**: {{ evaluation_time }}
+- **Total**: {{ total_time }}
+{%- endif %}
+{% endif %}
+### Framework Versions
+- Python: {{ version["python"] }}
+- Sentence Transformers: {{ version["sentence_transformers"] }}
+- Transformers: {{ version["transformers"] }}
+- PyTorch: {{ version["torch"] }}
+- Accelerate: {{ version["accelerate"] }}
+- Datasets: {{ version["datasets"] }}
+- Tokenizers: {{ version["tokenizers"] }}
+
+## Additional Resources
+
+- [Training and Finetuning Embedding Models with Sentence Transformers](https://huggingface.co/blog/train-sentence-transformers): the end-to-end guide for training or finetuning Sentence Transformer models.
+- [Introduction to Matryoshka Embedding Models](https://huggingface.co/blog/matryoshka): variable-size embeddings that can be truncated with minimal quality loss.
+- [Binary and Scalar Embedding Quantization for Significantly Faster & Cheaper Retrieval](https://huggingface.co/blog/embedding-quantization): post-training compression of embedding vectors.
+- [Multimodal Embedding & Reranker Models with Sentence Transformers](https://huggingface.co/blog/multimodal-sentence-transformers): use text, image, audio, and video models through the same API.
+- [Training and Finetuning Multimodal Embedding & Reranker Models with Sentence Transformers](https://huggingface.co/blog/train-multimodal-sentence-transformers): train multimodal embedding models, with a Visual Document Retrieval walkthrough.
+
+## Citation
+
+### BibTeX
+{% for loss_name, citation in citations.items() %}
+#### {{ loss_name }}
+```bibtex
+{{ citation | trim }}
+```
+{% endfor %}
+<!--
+## Glossary
+
+*Clearly define terms in order to be accessible across audiences.*
+-->
+
+<!--
+## Model Card Authors
+
+*Lists the people who create the model card, providing recognition and accountability for the detailed work that goes into its construction.*
+-->
+
+<!--
+## Model Card Contact
+
+*Provides a way for people who have updates to the Model Card, suggestions, or questions, to contact the Model Card authors.*
+-->
+
+
+---
+
+## [{{ model_name if model_name else ((model_type or "Sparse Encoder") + " model") }}](/venv/lib/python3.14/site-packages/sentence_transformers/sparse_encoder/model_card_template/)
+
+---
+# For reference on model card metadata, see the spec: https://github.com/huggingface/hub-docs/blob/main/modelcard.md?plain=1
+# Doc / guide: https://huggingface.co/docs/hub/model-cards
+{{ card_data }}
+---
+
+# {{ model_name if model_name else ((model_type or "Sparse Encoder") + " model") }}
+
+This is a [{{ model_type or "Sparse Encoder" }}](https://www.sbert.net/docs/sparse_encoder/usage/usage.html) model{% if base_model %} finetuned from [{{ base_model }}](https://huggingface.co/{{ base_model }}){% else %} trained{% endif %}{% if train_datasets | selectattr("name") | list %} on {% if train_datasets | selectattr("name") | map(attribute="name") | join(", ") | length > 200 %}{{ train_datasets | length }}{% else %}the {% for dataset in (train_datasets | selectattr("name")) %}{% if dataset.id %}[{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }}){% else %}{{ dataset.name }}{% endif %}{% if not loop.last %}{% if loop.index == (train_datasets | selectattr("name") | list | length - 1) %} and {% else %}, {% endif %}{% endif %}{% endfor %}{% endif %} dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}{% endif %} using the [sentence-transformers](https://www.SBERT.net) library. It maps sentences & paragraphs to a {{ output_dimensionality }}-dimensional sparse vector space {% if "CSR" in model_type %} with {{ max_active_dims }} maximum active dimensions{% endif %}  and can be used for {{ task_name }}.
+## Model Details
+
+### Model Description
+- **Model Type:** {{ model_type or "Sparse Encoder" }}
+{% if base_model -%}
+    {%- if base_model_revision -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }}) <!-- at revision {{ base_model_revision }} -->
+    {%- else -%}
+    - **Base model:** [{{ base_model }}](https://huggingface.co/{{ base_model }})
+    {%- endif -%}
+{%- else -%}
+    <!-- - **Base model:** [Unknown](https://huggingface.co/unknown) -->
+{%- endif %}
+- **Maximum Sequence Length:** {{ model_max_length }} tokens
+- **Output Dimensionality:** {{ output_dimensionality }} dimensions{% if max_active_dims %} (trained with {{ max_active_dims }} maximum active dimensions){% endif %}
+- **Similarity Function:** {{ similarity_fn_name }}
+{% if supported_modalities -%}
+    - **Supported Modalit{{"ies" if supported_modalities | length > 1 else "y"}}:** {{ supported_modalities | join(", ") }}
+{%- endif %}
+{% if train_datasets | selectattr("name") | list -%}
+    - **Training Dataset{{"s" if train_datasets | selectattr("name") | list | length > 1 else ""}}:**
+    {%- for dataset in (train_datasets | selectattr("name")) %}
+        {%- if dataset.id %}
+    - [{{ dataset.name if dataset.name else dataset.id }}](https://huggingface.co/datasets/{{ dataset.id }})
+        {%- else %}
+    - {{ dataset.name }}
+        {%- endif %}
+    {%- endfor %}
+{%- else -%}
+    <!-- - **Training Dataset:** Unknown -->
+{%- endif %}
+{% if language -%}
+    - **Language{{"s" if language is not string and language | length > 1 else ""}}:**
+    {%- if language is string %} {{ language }}
+    {%- else %} {% for lang in language -%}
+            {{ lang }}{{ ", " if not loop.last else "" }}
+        {%- endfor %}
+    {%- endif %}
+{%- else -%}
+    <!-- - **Language:** Unknown -->
+{%- endif %}
+{% if license -%}
+    - **License:** {{ license }}
+{%- else -%}
+    <!-- - **License:** Unknown -->
+{%- endif %}
+
+### Model Sources
+
+- **Documentation:** [Sentence Transformers Documentation](https://sbert.net)
+- **Documentation:** [Sparse Encoder Documentation](https://www.sbert.net/docs/sparse_encoder/usage/usage.html)
+- **Repository:** [Sentence Transformers on GitHub](https://github.com/huggingface/sentence-transformers)
+- **Hugging Face:** [Sparse Encoders on Hugging Face](https://huggingface.co/models?library=sentence-transformers&other=sparse-encoder)
+
+### Full Model Architecture
+
+```
+{{ model_string }}
+```
+
+## Usage
+
+### Direct Usage (Sentence Transformers)
+
+First install the Sentence Transformers library:
+
+```bash
+pip install -U sentence-transformers
+```
+Then you can load this model and run inference.
+{{ usage_snippet }}
+<!--
+### Direct Usage (Transformers)
+
+<details><summary>Click to see the direct usage in Transformers</summary>
+
+</details>
+-->
+
+<!--
+### Downstream Usage (Sentence Transformers)
+
+You can finetune this model on your own dataset.
+
+<details><summary>Click to expand</summary>
+
+</details>
+-->
+
+<!--
+### Out-of-Scope Use
+
+*List how the model may foreseeably be misused and address what users ought not to do with the model.*
+-->
+{% if eval_metrics %}
+## Evaluation
+
+### Metrics
+{% for metrics in eval_metrics %}
+#### {{ metrics.description }}
+{% if metrics.dataset_name %}
+* Dataset{% if metrics.dataset_name is not string and metrics.dataset_name | length > 1 %}s{% endif %}: {% if metrics.dataset_name is string -%}
+        `{{ metrics.dataset_name }}`
+    {%- else -%}
+        {%- for name in metrics.dataset_name -%}
+            `{{ name }}`
+            {%- if not loop.last -%}
+                {%- if loop.index == metrics.dataset_name | length - 1 %} and {% else -%}, {% endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endif %}
+* Evaluated with {% if metrics.class_name.startswith("sentence_transformers.") %}[<code>{{ metrics.class_name.split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sparse_encoder/evaluation.html#sentence_transformers.sparse_encoder.evaluation.{{ metrics.class_name.split(".")[-1] }}){% else %}<code>{{ metrics.class_name }}</code>{% endif %}{% if metrics.config_code %} with these parameters:
+{{ metrics.config_code }}{% endif %}
+
+{{ metrics.table }}
+{%- endfor %}{% endif %}
+<!--
+## Bias, Risks and Limitations
+
+*What are the known or foreseeable issues stemming from this model? You could also flag here known failure cases or weaknesses of the model.*
+-->
+
+<!--
+### Recommendations
+
+*What are recommendations with respect to the foreseeable issues? For example, filtering explicit content.*
+-->
+
+## Training Details
+{% for dataset_type, dataset_list in [("training", train_datasets), ("evaluation", eval_datasets)] %}{% if dataset_list %}
+### {{ dataset_type.title() }} Dataset{{"s" if dataset_list | length > 1 else ""}}
+{% for dataset in dataset_list %}{% if dataset_list | length > 3 %}<details><summary>{{ dataset['name'] or 'Unnamed Dataset' }}</summary>
+{% endif %}
+#### {{ dataset['name'] or 'Unnamed Dataset' }}
+{% if dataset['name'] %}
+* Dataset: {% if 'id' in dataset %}[{{ dataset['name'] }}](https://huggingface.co/datasets/{{ dataset['id'] }}){% else %}{{ dataset['name'] }}{% endif %}
+{%- if 'revision' in dataset and 'id' in dataset %} at [{{ dataset['revision'][:7] }}](https://huggingface.co/datasets/{{ dataset['id'] }}/tree/{{ dataset['revision'] }}){% endif %}{% endif %}
+{% if dataset['size'] %}* Size: {{ "{:,}".format(dataset['size']) }} {{ dataset_type }} samples
+{% endif %}* Columns: {% if dataset['columns'] | length == 1 %}{{ dataset['columns'][0] }}{% elif dataset['columns'] | length == 2 %}{{ dataset['columns'][0] }} and {{ dataset['columns'][1] }}{% else %}{{ dataset['columns'][:-1] | join(', ') }}, and {{ dataset['columns'][-1] }}{% endif %}
+{% if dataset['stats_table'] %}* Approximate statistics based on the first {{ [dataset['size'], 100] | min }} samples:
+{{ dataset['stats_table'] }}{% endif %}{% if dataset['examples_table'] %}* Samples:
+{{ dataset['examples_table'] }}{% endif %}* Loss: {% if dataset["loss"]["fullname"].startswith("sentence_transformers.") %}[<code>{{ dataset["loss"]["fullname"].split(".")[-1] }}</code>](https://sbert.net/docs/package_reference/sparse_encoder/losses.html#{{ dataset["loss"]["fullname"].split(".")[-1].lower() }}){% else %}<code>{{ dataset["loss"]["fullname"] }}</code>{% endif %}{% if "config_code" in dataset["loss"] %} with these parameters:
+{{ dataset["loss"]["config_code"] }}{% endif %}
+{% if dataset_list | length > 3 %}</details>
+{% endif %}{% endfor %}{% endif %}{% endfor -%}
+
+{% if all_hyperparameters %}
+### Training Hyperparameters
+{% if non_default_hyperparameters -%}
+#### Non-Default Hyperparameters
+
+{% for name, value in non_default_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}{%- endif %}
+#### All Hyperparameters
+<details><summary>Click to expand</summary>
+
+{% for name, value in all_hyperparameters.items() %}- `{{ name }}`: {{ value }}
+{% endfor %}
+</details>
+{% endif %}
+
+{%- if eval_lines %}
+### Training Logs
+{% if hide_eval_lines %}<details><summary>Click to expand</summary>
+
+{% endif -%}
+{{ eval_lines }}{% if explain_bold_in_eval %}
+* The bold row denotes the saved checkpoint.{% endif %}
+{%- if hide_eval_lines %}
+</details>{% endif %}
+{% endif %}
+
+{%- if co2_eq_emissions %}
+### Environmental Impact
+Carbon emissions were measured using [CodeCarbon](https://github.com/mlco2/codecarbon).
+- **Energy Consumed**: {{ "%.3f"|format(co2_eq_emissions["energy_consumed"]) }} kWh
+- **Carbon Emitted**: {{ "%.3f"|format(co2_eq_emissions["emissions"] / 1000) }} kg of CO2
+
+### Training Hardware
+- **On Cloud**: {{ "Yes" if co2_eq_emissions["on_cloud"] else "No" }}
+- **GPU Model**: {{ co2_eq_emissions["hardware_used"] or "No GPU used" }}
+- **CPU Model**: {{ co2_eq_emissions["cpu_model"] }}
+- **RAM Size**: {{ "%.2f"|format(co2_eq_emissions["ram_total_size"]) }} GB
+{% endif %}
+{%- if training_time is not none %}
+### Training Time
+- **Training**: {{ training_time }}
+{%- if evaluation_time is not none %}
+- **Evaluation**: {{ evaluation_time }}
+- **Total**: {{ total_time }}
+{%- endif %}
+{% endif %}
+### Framework Versions
+- Python: {{ version["python"] }}
+- Sentence Transformers: {{ version["sentence_transformers"] }}
+- Transformers: {{ version["transformers"] }}
+- PyTorch: {{ version["torch"] }}
+- Accelerate: {{ version["accelerate"] }}
+- Datasets: {{ version["datasets"] }}
+- Tokenizers: {{ version["tokenizers"] }}
+
+## Additional Resources
+
+- [Training and Finetuning Sparse Embedding Models with Sentence Transformers](https://huggingface.co/blog/train-sparse-encoder): the end-to-end guide for training or finetuning SPLADE and other sparse encoder models.
+
+## Citation
+
+### BibTeX
+{% for loss_name, citation in citations.items() %}
+#### {{ loss_name }}
+```bibtex
+{{ citation | trim }}
+```
+{% endfor %}
+<!--
+## Glossary
+
+*Clearly define terms in order to be accessible across audiences.*
+-->
+
+<!--
+## Model Card Authors
+
+*Lists the people who create the model card, providing recognition and accountability for the detailed work that goes into its construction.*
+-->
+
+<!--
+## Model Card Contact
+
+*Provides a way for people who have updates to the Model Card, suggestions, or questions, to contact the Model Card authors.*
+--> 
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/sklearn/externals/array_api_compat/)
+
+Update this directory using maint_tools/vendor_array_api_compat.sh
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/sklearn/externals/array_api_extra/)
+
+Update this directory using maint_tools/vendor_array_api_extra.sh
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/starlette-1.3.0.dist-info/licenses/LICENSE/)
+
+Copyright © 2018, [Encode OSS Ltd](https://www.encode.io/).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/torchgen/packaged/autograd/)
+
+If you add a file to this directory, you **MUST** update
+`torch/CMakeLists.txt` and add the file as a dependency to
+the `add_custom_command` call.
+
+
+---
+
+## [Untitled](/venv/lib/python3.14/site-packages/uvicorn-0.49.0.dist-info/licenses/LICENSE/)
+
+Copyright © 2017-present, [Encode OSS Ltd](https://www.encode.io/).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 ---
