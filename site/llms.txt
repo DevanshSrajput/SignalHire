@@ -4,14 +4,15 @@
 
 ## Documentation Files
 
-- [App Flow Document](/Documentation/APP_FLOW/)
-- [Backend Schema Document](/Documentation/BACKEND_SCHEMA/)
-- [Implementation Plan](/Documentation/IMPLEMENTATION_PLAN/)
-- [RecruiterIQ — Product Requirements Document](/Documentation/RecruiterIQ_PRD/)
-- [Technical Requirements Document (TRD)](/Documentation/TRD/)
-- [UI/UX Design Document](/Documentation/UIUX_DESIGN/)
+- [📚 SignalHire — Complete Documentation](/Documentation/)
 - [🎯 Good First Issues](/GOOD_FIRST_ISSUES/)
 - [🎯 SignalHire — AI-Powered Candidate Ranking](/)
+- [App Flow Document](/Initial-Documentation/APP_FLOW/)
+- [Backend Schema Document](/Initial-Documentation/BACKEND_SCHEMA/)
+- [Implementation Plan](/Initial-Documentation/IMPLEMENTATION_PLAN/)
+- [RecruiterIQ — Product Requirements Document](/Initial-Documentation/RecruiterIQ_PRD/)
+- [Technical Requirements Document (TRD)](/Initial-Documentation/TRD/)
+- [UI/UX Design Document](/Initial-Documentation/UIUX_DESIGN/)
 - [Untitled](/venv/lib/python3.14/site-packages/_plotly_utils/)
 - [JupyterChart](/venv/lib/python3.14/site-packages/altair/jupyter/js/)
 - [Untitled](/venv/lib/python3.14/site-packages/cuda/pathfinder/)

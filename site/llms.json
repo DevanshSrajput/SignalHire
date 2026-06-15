@@ -3,38 +3,8 @@
   "description": "",
   "pages": [
     {
-      "title": "App Flow Document",
-      "url": "/Documentation/APP_FLOW/",
-      "description": "",
-      "priority": "medium"
-    },
-    {
-      "title": "Backend Schema Document",
-      "url": "/Documentation/BACKEND_SCHEMA/",
-      "description": "",
-      "priority": "medium"
-    },
-    {
-      "title": "Implementation Plan",
-      "url": "/Documentation/IMPLEMENTATION_PLAN/",
-      "description": "",
-      "priority": "medium"
-    },
-    {
-      "title": "RecruiterIQ — Product Requirements Document",
-      "url": "/Documentation/RecruiterIQ_PRD/",
-      "description": "",
-      "priority": "medium"
-    },
-    {
-      "title": "Technical Requirements Document (TRD)",
-      "url": "/Documentation/TRD/",
-      "description": "",
-      "priority": "medium"
-    },
-    {
-      "title": "UI/UX Design Document",
-      "url": "/Documentation/UIUX_DESIGN/",
+      "title": "📚 SignalHire — Complete Documentation",
+      "url": "/Documentation/",
       "description": "",
       "priority": "medium"
     },
@@ -49,6 +19,42 @@
       "url": "/",
       "description": "",
       "priority": "high"
+    },
+    {
+      "title": "App Flow Document",
+      "url": "/Initial-Documentation/APP_FLOW/",
+      "description": "",
+      "priority": "medium"
+    },
+    {
+      "title": "Backend Schema Document",
+      "url": "/Initial-Documentation/BACKEND_SCHEMA/",
+      "description": "",
+      "priority": "medium"
+    },
+    {
+      "title": "Implementation Plan",
+      "url": "/Initial-Documentation/IMPLEMENTATION_PLAN/",
+      "description": "",
+      "priority": "medium"
+    },
+    {
+      "title": "RecruiterIQ — Product Requirements Document",
+      "url": "/Initial-Documentation/RecruiterIQ_PRD/",
+      "description": "",
+      "priority": "medium"
+    },
+    {
+      "title": "Technical Requirements Document (TRD)",
+      "url": "/Initial-Documentation/TRD/",
+      "description": "",
+      "priority": "medium"
+    },
+    {
+      "title": "UI/UX Design Document",
+      "url": "/Initial-Documentation/UIUX_DESIGN/",
+      "description": "",
+      "priority": "medium"
     },
     {
       "title": "Untitled",
