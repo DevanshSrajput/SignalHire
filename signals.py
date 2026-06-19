@@ -89,14 +89,14 @@ def compute_technical_fit(candidate: dict) -> float:
     skill_dict = _build_skill_dict(candidate)
 
     career_descriptions = " ".join(
-        r.get("description", "") for r in candidate.get("career_history", [])
+        (r.get("description", "") or "") for r in candidate.get("career_history", [])
     )
     blob = (
-        candidate.get("profile", {}).get("headline", "")
+        (candidate.get("profile", {}).get("headline", "") or "")
         + " "
-        + candidate.get("profile", {}).get("summary", "")
+        + (candidate.get("profile", {}).get("summary", "") or "")
         + " "
-        + candidate.get("profile", {}).get("current_title", "")
+        + (candidate.get("profile", {}).get("current_title", "") or "")
         + " "
         + career_descriptions
     )
