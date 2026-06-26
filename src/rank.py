@@ -7,6 +7,10 @@ import sys
 import time
 from pathlib import Path
 
+import openpyxl
+from openpyxl.styles import Alignment, Font, PatternFill, numbers
+from openpyxl.utils import get_column_letter
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
@@ -139,6 +143,54 @@ def main():
             reasoning = generate_reasoning(cand or {})
             writer.writerow([cid, rank, format_score(score_val), reasoning])
 
+    # ── XLSX export ──────────────────────────────────────────────────────────
+    xlsx_path = OUTPUT_DIR / "submission.xlsx"
+    print(f"Writing {xlsx_path} ...")
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Rankings"
+
+    # Header style
+    hdr_fill = PatternFill("solid", fgColor="1E1B4B")
+    hdr_font = Font(bold=True, color="E0E7FF", size=11)
+    headers = ["Rank", "Candidate ID", "Score (/10)", "Reasoning"]
+    col_widths = [7, 18, 13, 90]
+    for col, (h, w) in enumerate(zip(headers, col_widths), 1):
+        cell = ws.cell(row=1, column=col, value=h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        ws.column_dimensions[get_column_letter(col)].width = w
+    ws.row_dimensions[1].height = 22
+
+    # Row styles: alternate light purple / white
+    fill_even = PatternFill("solid", fgColor="EEF2FF")
+    fill_odd  = PatternFill("solid", fgColor="FFFFFF")
+    score_font = Font(bold=True, color="4F46E5")
+
+    # Re-read the CSV we just wrote so we don't duplicate logic
+    with open(output_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row_idx, row in enumerate(reader, 2):
+            fill = fill_even if row_idx % 2 == 0 else fill_odd
+            cells = [
+                (row["rank"],         Alignment(horizontal="center")),
+                (row["candidate_id"], Alignment(horizontal="left")),
+                (row["score"],        Alignment(horizontal="center")),
+                (row["reasoning"],    Alignment(horizontal="left", wrap_text=True)),
+            ]
+            for col, (val, align) in enumerate(cells, 1):
+                c = ws.cell(row=row_idx, column=col, value=val)
+                c.fill = fill
+                c.alignment = align
+                if col == 3:
+                    c.font = score_font
+            ws.row_dimensions[row_idx].height = 40
+
+    ws.freeze_panes = "A2"
+    wb.save(xlsx_path)
+    # ─────────────────────────────────────────────────────────────────────────
+
     elapsed = time.time() - t0
     print(f"Ranking complete in {elapsed:.1f}s")
 
@@ -157,7 +209,8 @@ def main():
         print("Submission valid!")
     else:
         print("validate_submission.py not found — skipping in-container validation.")
-    print(f"Output: {output_path}")
+    print(f"Output (CSV):  {output_path}")
+    print(f"Output (XLSX): {xlsx_path}")
 
 
 if __name__ == "__main__":
