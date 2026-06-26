@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalHire — Technical Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #07070d; --bg2: #0e0e1a; --bg3: #13132a;
+  --indigo: #6366f1; --violet: #8b5cf6; --pink: #ec4899;
+  --amber:  #f59e0b; --green: #10b981; --cyan: #06b6d4;
+  --text:   #f1f5f9; --muted: #94a3b8;
+  --border: rgba(99,102,241,0.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.7; }
+
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--indigo); border-radius: 3px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 2rem;
+  padding: 0.9rem 2.5rem;
+  background: rgba(7,7,13,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.2rem; background: linear-gradient(90deg, var(--indigo), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+nav a:hover { color: var(--text); }
+.nav-btn { background: linear-gradient(135deg, var(--indigo), var(--violet)); color: #fff !important; padding: 0.4rem 1rem; border-radius: 7px; margin-left: auto; }
+
+/* ─── LAYOUT ─── */
+.layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; padding-top: 56px; }
+
+/* ─── SIDEBAR ─── */
+aside {
+  position: sticky; top: 56px; height: calc(100vh - 56px);
+  overflow-y: auto; padding: 2rem 1.5rem;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  z-index: 10;
+}
+.sidebar-title { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem; margin-top: 1.5rem; }
+.sidebar-title:first-child { margin-top: 0; }
+aside ul { list-style: none; }
+aside ul li a {
+  display: block; padding: 0.35rem 0.7rem; border-radius: 6px;
+  font-size: 0.82rem; color: var(--muted); text-decoration: none;
+  transition: all 0.15s;
+}
+aside ul li a:hover, aside ul li a.active {
+  color: var(--text); background: rgba(99,102,241,0.12);
+}
+aside ul li a.sub { padding-left: 1.3rem; font-size: 0.78rem; }
+
+/* ─── MAIN ─── */
+main { padding: 3rem 3.5rem; max-width: 860px; position: relative; z-index: 1; }
+
+/* ─── HEADING STYLES ─── */
+h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 3.5rem; margin-bottom: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.7rem; color: var(--text); }
+h4 { font-size: 0.95rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--cyan); }
+h2:first-child { margin-top: 0; border-top: none; }
+
+.grad-text { background: linear-gradient(135deg, var(--indigo), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+p { margin-bottom: 1rem; font-size: 0.9rem; color: #cbd5e1; }
+a { color: var(--indigo); text-decoration: none; } a:hover { text-decoration: underline; }
+
+/* ─── TABLE ─── */
+.table-wrap { overflow-x: auto; margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { background: rgba(99,102,241,0.1); padding: 0.8rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); white-space: nowrap; }
+td { padding: 0.75rem 1rem; border-top: 1px solid rgba(99,102,241,0.08); vertical-align: top; line-height: 1.5; }
+tr:hover td { background: rgba(99,102,241,0.03); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+td code { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; background: rgba(99,102,241,0.12); padding: 0.15rem 0.4rem; border-radius: 4px; color: var(--indigo); }
+
+/* ─── CODE ─── */
+pre {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.2rem 1.5rem;
+  overflow-x: auto; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; line-height: 1.8; margin: 1rem 0;
+  color: #e2e8f0;
+}
+code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: rgba(99,102,241,0.1); padding: 0.15rem 0.45rem; border-radius: 4px; color: var(--indigo); }
+pre code { background: none; padding: 0; color: inherit; }
+.hl-green { color: var(--green); }
+.hl-amber { color: var(--amber); }
+.hl-cyan  { color: var(--cyan); }
+.hl-muted { color: var(--muted); }
+.hl-pink  { color: var(--pink); }
+
+/* ─── CALLOUTS ─── */
+.callout {
+  border-left: 3px solid var(--indigo); background: rgba(99,102,241,0.07);
+  border-radius: 0 12px 12px 0; padding: 1rem 1.2rem; margin: 1.2rem 0;
+  font-size: 0.88rem;
+}
+.callout-green { border-color: var(--green); background: rgba(16,185,129,0.07); }
+.callout-amber { border-color: var(--amber); background: rgba(245,158,11,0.07); }
+.callout-red   { border-color: #ef4444;      background: rgba(239,68,68,0.07); }
+
+/* ─── TAGS ─── */
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; letter-spacing: 0.04em; margin-left: 0.4rem; }
+.ti { background: rgba(99,102,241,0.15); color: var(--indigo); }
+.tg { background: rgba(16,185,129,0.15);  color: var(--green); }
+.ta { background: rgba(245,158,11,0.15);  color: var(--amber); }
+.tp { background: rgba(236,72,153,0.15);  color: var(--pink); }
+
+/* ─── FUNCTION SIG BOX ─── */
+.fn-sig {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.2rem 0;
+}
+.fn-sig .sig { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--cyan); margin-bottom: 0.5rem; }
+.fn-sig p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+/* ─── SECTION ANCHOR ─── */
+.anchor { scroll-margin-top: 80px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { display: none; }
+  main { padding: 2rem 1.5rem; }
+}
+
+/* ─── BACK TO TOP ─── */
+.back-top {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  color: var(--muted); font-size: 0.8rem; text-decoration: none;
+  margin-top: 3rem; padding: 0.4rem 0.8rem;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  transition: color 0.2s;
+}
+.back-top:hover { color: var(--text); text-decoration: none; }
+
+/* separator */
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">🎯 SignalHire</a>
+  <a href="index.html">Home</a>
+  <a href="#overview">Overview</a>
+  <a href="#modules">Modules</a>
+  <a href="#scoring">Scoring</a>
+  <a href="#initial-docs">Design Docs</a>
+  <a href="https://github.com/DevanshSrajput/SignalHire" target="_blank">GitHub</a>
+  <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank" class="nav-btn">🤗 Live Demo</a>
+</nav>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sidebar-title">Getting Started</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#quickstart" class="sub">Quick Start</a></li>
+    <li><a href="#prerequisites" class="sub">Prerequisites</a></li>
+    <li><a href="#docker" class="sub">Docker</a></li>
+  </ul>
+
+  <div class="sidebar-title">Architecture</div>
+  <ul>
+    <li><a href="#pipeline">Two-Phase Pipeline</a></li>
+    <li><a href="#depgraph" class="sub">Dependency Graph</a></li>
+    <li><a href="#dataflow" class="sub">Data Flow</a></li>
+  </ul>
+
+  <div class="sidebar-title">Module Reference</div>
+  <ul>
+    <li><a href="#config">config.py</a></li>
+    <li><a href="#textmatch" class="sub">textmatch.py</a></li>
+    <li><a href="#disqualify" class="sub">disqualify.py</a></li>
+    <li><a href="#signals" class="sub">signals.py</a></li>
+    <li><a href="#evidence" class="sub">evidence.py</a></li>
+    <li><a href="#engine" class="sub">engine.py</a></li>
+    <li><a href="#precompute" class="sub">precompute.py</a></li>
+    <li><a href="#rank" class="sub">rank.py</a></li>
+    <li><a href="#app" class="sub">app.py</a></li>
+  </ul>
+
+  <div class="sidebar-title">Scoring</div>
+  <ul>
+    <li><a href="#formula">Formula</a></li>
+    <li><a href="#technical-fit" class="sub">Technical Fit (0.35)</a></li>
+    <li><a href="#career-quality" class="sub">Career Quality (0.25)</a></li>
+    <li><a href="#availability" class="sub">Availability (0.20)</a></li>
+    <li><a href="#seniority" class="sub">Seniority Fit (0.12)</a></li>
+    <li><a href="#semantic" class="sub">Semantic Similarity (0.08)</a></li>
+    <li><a href="#penalties" class="sub">Penalty Multipliers</a></li>
+  </ul>
+
+  <div class="sidebar-title">Data Schemas</div>
+  <ul>
+    <li><a href="#input-schema">Input JSONL</a></li>
+    <li><a href="#artifacts-schema" class="sub">Artifacts</a></li>
+    <li><a href="#output-schema" class="sub">Output CSV</a></li>
+  </ul>
+
+  <div class="sidebar-title">Deployment</div>
+  <ul>
+    <li><a href="#deployment">Local / Docker / HF</a></li>
+    <li><a href="#sandbox" class="sub">Sandbox Constraints</a></li>
+    <li><a href="#performance" class="sub">Performance</a></li>
+  </ul>
+
+  <div class="sidebar-title">Design Documents</div>
+  <ul>
+    <li><a href="#initial-docs">Archive</a></li>
+    <li><a href="#prd" class="sub">PRD</a></li>
+    <li><a href="#trd" class="sub">TRD</a></li>
+    <li><a href="#app-flow" class="sub">App Flow</a></li>
+    <li><a href="#impl-plan" class="sub">Implementation Plan</a></li>
+    <li><a href="#uiux" class="sub">UI/UX Design</a></li>
+  </ul>
+
+  <div class="sidebar-title">Other</div>
+  <ul>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="index.html">← Back to Home</a></li>
+  </ul>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HERO -->
+  <h1 class="anchor" id="top"><span class="grad-text">SignalHire</span><br>Technical Documentation</h1>
+  <p style="color:var(--muted);font-size:0.85rem;">Version 1.0 · June 2026 · AI-Powered Candidate Ranking for the Redrob AI Challenge</p>
+
+  <div class="callout-green callout" style="margin-top:1.5rem;">
+    <strong>Live Demo:</strong> <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank">huggingface.co/spaces/DevanshSrajput/SignalHire</a> — Interactive dashboard on 50 sample candidates, all tabs live. &nbsp;·&nbsp; <a href="https://github.com/DevanshSrajput/SignalHire" target="_blank">GitHub Repo</a> &nbsp;·&nbsp; <a href="https://devanshsingh.dev" target="_blank">Author Portfolio</a>
+  </div>
+
+  <!-- OVERVIEW -->
+  <h2 class="anchor" id="overview">Overview</h2>
+  <p><strong>SignalHire</strong> is an AI-powered candidate ranking system that processes <strong>100,000 candidate profiles</strong> and surfaces the <strong>top 100 best matches</strong> for a Senior AI Engineer role. Built for the <strong>Redrob AI Challenge</strong> at the India Runs Hackathon.</p>
+
+  <h3>The Problem</h3>
+  <p>Given a 487 MB JSONL file containing 100K candidate profiles — including keyword stuffers, ~80 honeypot/adversarial profiles, behavioral twins, and strong engineers who describe themselves in plain language — identify and rank the top 100 candidates for a Senior AI Engineer position.</p>
+
+  <h3>The Solution</h3>
+  <p>A two-phase offline hybrid scoring pipeline:</p>
+  <ul style="margin:0.5rem 0 1rem 1.2rem;font-size:0.9rem;color:#cbd5e1;">
+    <li><strong>Phase A (Precompute)</strong> — Embedding generation + multi-signal sub-score computation (GPU optional via <code>EMBEDDING_DEVICE=cuda</code>)</li>
+    <li><strong>Phase B (Ranking)</strong> — CPU-only composite scoring via vectorized matrix operations, evidence-based reasoning, and validated CSV output</li>
+  </ul>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Offline precompute</td><td>Separates expensive GPU work from CPU-only ranking sandbox</td></tr>
+        <tr><td>Multi-signal scoring</td><td>Defeats keyword stuffers — no single signal can game the system</td></tr>
+        <tr><td>Semantic embedding backup</td><td>Catches strong engineers whose plain language misses keyword checks</td></tr>
+        <tr><td>Evidence-cited reasoning</td><td>Every score claim traces to a specific skill or sentence</td></tr>
+        <tr><td>Vectorized re-ranking</td><td>Enables live 50 ms re-ranking of all 100K candidates in the dashboard</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- QUICK START -->
+  <h2 class="anchor" id="quickstart">Quick Start</h2>
+  <pre><span class="hl-muted"># Clone and setup</span>
+git clone https://github.com/DevanshSrajput/SignalHire.git
+cd SignalHire
+python -m venv venv &amp;&amp; source venv/bin/activate
+pip install -r requirements.txt
+
+<span class="hl-muted"># Step 1: Precompute (CPU default; GPU ~10× faster)</span>
+python precompute.py
+<span class="hl-muted"># or:</span>
+EMBEDDING_DEVICE=cuda python precompute.py
+
+<span class="hl-muted"># Step 2: Rank → output/submission.csv</span>
+python rank.py
+
+<span class="hl-muted"># Step 3: Dashboard</span>
+streamlit run app.py  <span class="hl-muted"># http://localhost:8501</span></pre>
+
+  <h3 class="anchor" id="prerequisites">Prerequisites</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Requirement</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Python ≥ 3.10</td><td>Required</td></tr>
+        <tr><td>NVIDIA GPU + CUDA</td><td>Optional — speeds precompute ~10×. CPU is the default; set <code>EMBEDDING_DEVICE=cuda</code> to use GPU</td></tr>
+        <tr><td>Disk</td><td>~500 MB for data + ~160 MB for generated artifacts</td></tr>
+        <tr><td>RAM</td><td>16 GB recommended</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="anchor" id="docker">Docker</h3>
+  <p>Artifacts are baked into the image — only <code>candidates.jsonl</code> needs to be mounted at runtime.</p>
+  <pre><span class="hl-muted"># Build (bakes precomputed artifacts, pre-downloads embedding model)</span>
+docker build -t signalhire .
+
+<span class="hl-muted"># Rank (mount candidates.jsonl in, get submission.csv out)</span>
+docker run --rm \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/output:/app/output \
+  signalhire
+
+<span class="hl-muted"># Dashboard</span>
+docker run --rm -p 8501:8501 \
+  -v $(pwd)/data:/app/data \
+  signalhire streamlit run app.py --server.port=8501 --server.address=0.0.0.0</pre>
+
+  <div class="callout">Precomputed artifacts are baked into the image — no GPU needed at runtime. Add <code>--gpus all</code> only for GPU-accelerated precompute runs.</div>
+
+  <!-- ARCHITECTURE -->
+  <h2 class="anchor" id="pipeline">Two-Phase Pipeline</h2>
+  <pre>                    candidates.jsonl (100K, 487 MB)
+                            │
+                            ▼
+          ┌──────────────────────────────────────┐
+          │  PHASE A: Precompute (GPU, ~4 min)   │
+          │                                      │
+          │  Stream JSONL ─► Disqualify fakes    │
+          │         └──► Embed (MiniLM, 384-dim) │
+          │         └──► Compute 4 sub-scores    │
+          │         └──► Serialize artifacts     │
+          └──────────────┬───────────────────────┘
+                         │  embeddings.npy + subscores.pkl (~155 MB)
+                         ▼
+          ┌──────────────────────────────────────┐
+          │  PHASE B: Ranking (CPU, &lt;10 s)       │
+          │                                      │
+          │  Load artifacts ─► Cosine similarity │
+          │         └──► Weighted composite      │
+          │         └──► argsort → top 100       │
+          │         └──► Evidence-based reasoning│
+          │         └──► Validate &amp; write CSV    │
+          └──────────────┬───────────────────────┘
+                         │
+                         ▼
+          ┌──────────────────────────────────────┐
+          │  DASHBOARD (CPU, ~50 ms re-rank)     │
+          │  Weight UI → Live matrix re-score    │
+          │  6 interactive tabs                  │
+          └──────────────────────────────────────┘</pre>
+
+  <h3 class="anchor" id="depgraph">Dependency Graph</h3>
+  <pre><span class="hl-muted">Layer 0 — leaf modules (no project imports):</span>
+<span class="hl-cyan">    textmatch.py</span> ─── re, functools
+<span class="hl-cyan">    config.py   </span> ─── os, re, pathlib
+
+<span class="hl-muted">Layer 1:</span>
+<span class="hl-green">    disqualify.py</span> ──► config, textmatch
+
+<span class="hl-muted">Layer 2:</span>
+<span class="hl-green">    signals.py  </span> ──► config, disqualify, textmatch
+
+<span class="hl-muted">Layer 3:</span>
+<span class="hl-green">    evidence.py </span> ──► config, signals, textmatch
+<span class="hl-green">    engine.py   </span> ──► config
+
+<span class="hl-muted">Layer 4:</span>
+<span class="hl-amber">    precompute.py</span> ──► config, disqualify, signals + sentence_transformers
+
+<span class="hl-muted">Layer 5:</span>
+<span class="hl-amber">    rank.py     </span> ──► config, engine, evidence
+
+<span class="hl-muted">Layer 6:</span>
+<span class="hl-pink">    app.py      </span> ──► config, engine, evidence, rank + streamlit, plotly</pre>
+
+  <h3 class="anchor" id="dataflow">Data Flow</h3>
+  <pre>candidates.jsonl ──► precompute.py ──► artifacts/
+                          │                 ├── embeddings.npy     (99965×384, float32)
+                          │                 ├── candidate_ids.npy  (99965 strings)
+                          │                 ├── jd_embedding.npy   (384, float32)
+                          │                 ├── subscores.pkl      (99965 dicts)
+                          │                 ├── disqualified.json  (~35 records)
+                          │                 └── demographics.csv
+                          │
+                          └── rank.py ──► output/submission.csv
+                              app.py  ──► Streamlit dashboard (http://localhost:8501)</pre>
+
+  <!-- MODULE REFERENCE -->
+  <h2 class="anchor" id="modules">Module Reference</h2>
+
+  <h3 class="anchor" id="config">config.py — Configuration Hub</h3>
+  <p>Single source of truth for all paths, weights, keyword lists, penalties, and thresholds. Every other module imports from here — no magic numbers elsewhere.</p>
+
+  <h4>Path Constants</h4>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ROOT</code></td><td>Project root</td><td>Base directory (resolved from config.py location)</td></tr>
+      <tr><td><code>DATA_DIR</code></td><td>ROOT / "data"</td><td>Raw input data</td></tr>
+      <tr><td><code>ARTIFACTS_DIR</code></td><td>ROOT / "artifacts"</td><td>Precomputed output</td></tr>
+      <tr><td><code>OUTPUT_DIR</code></td><td>ROOT / "output"</td><td>Final CSV output</td></tr>
+      <tr><td><code>CANDIDATES_PATH</code></td><td>DATA_DIR / "candidates.jsonl"</td><td>100K profiles (~487 MB)</td></tr>
+      <tr><td><code>VALIDATE_SCRIPT</code></td><td>DATA_DIR / "validate_submission.py"</td><td>Challenge validator script</td></tr>
+      <tr><td><code>SAMPLE_PATH</code></td><td>DATA_DIR / "sample_candidates.json"</td><td>Sample data for demo mode</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Scoring Weights</h4>
+  <pre><span class="hl-green">WEIGHTS</span> = {
+    <span class="hl-amber">"technical_fit"</span>:       0.35,
+    <span class="hl-amber">"career_quality"</span>:      0.25,
+    <span class="hl-amber">"availability_signal"</span>: 0.20,
+    <span class="hl-amber">"seniority_fit"</span>:       0.12,
+    <span class="hl-amber">"semantic_similarity"</span>: 0.08,
+}
+<span class="hl-muted"># Sum is asserted to equal 1.0</span></pre>
+
+  <h4>Embedding Configuration</h4>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>EMBEDDING_MODEL</code></td><td>"sentence-transformers/all-MiniLM-L6-v2"</td><td>384-dim sentence embeddings</td></tr>
+      <tr><td><code>EMBEDDING_DIM</code></td><td>384</td><td>Vector dimensionality</td></tr>
+      <tr><td><code>EMBEDDING_DEVICE</code></td><td>os.getenv("EMBEDDING_DEVICE", "cpu")</td><td>Compute device — cpu default, override with env var</td></tr>
+      <tr><td><code>EMBEDDING_BATCH_SIZE</code></td><td>2048</td><td>Batch size for encoding</td></tr>
+      <tr><td><code>PROFILE_BLOB_MAX_CHARS</code></td><td>1024</td><td>Max chars for embedding input</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>Penalty Constants</h4>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CONSULTING_PENALTY</code></td><td>0.15</td><td>Multiplier for all-consulting careers</td></tr>
+      <tr><td><code>NO_CODE_PENALTY</code></td><td>0.80</td><td>Multiplier for 18+ months of inactivity</td></tr>
+      <tr><td><code>CV_SPEECH_ROBOTICS_PENALTY</code></td><td>0.85</td><td>Multiplier for off-domain specialization</td></tr>
+      <tr><td><code>HONEYPOT_YEAR_BUFFER</code></td><td>5</td><td>Allowed YoE vs career timeline discrepancy</td></tr>
+      <tr><td><code>GHOST_COMPLETENESS_THRESHOLD</code></td><td>5</td><td>Profile completeness % below which → ghost</td></tr>
+    </tbody>
+  </table></div>
+
+  <hr>
+
+  <h3 class="anchor" id="textmatch">textmatch.py — Keyword Matching Engine</h3>
+  <p>Word-boundary-aware keyword matching. Prevents false positives like <code>"rag"</code> matching inside <code>"storage"</code> or <code>"map"</code> inside <code>"bitmap"</code>.</p>
+  <p><strong>Design:</strong> Keywords ≥4 characters use stem matching (<code>\b{kw}\w*</code>), allowing <code>"eval"</code> → <code>"evaluation"</code>. Keywords &lt;4 characters require exact word match (<code>\b{kw}\b</code>).</p>
+
+  <div class="fn-sig">
+    <div class="sig">keyword_pattern(kw: str) → re.Pattern</div>
+    <p>Returns a compiled regex. <strong>Cached</strong> via <code>functools.lru_cache(maxsize=1024)</code>. kw ≥ 4 chars → stem match; kw &lt; 4 → exact word.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">matches_any(text: str, keywords: List[str]) → bool</div>
+    <p>Returns True if any keyword matches. Short-circuits on first match.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">matched_keywords(text: str, keywords: List[str]) → List[str]</div>
+    <p>Returns all keywords that match within the text.</p>
+  </div>
+
+  <hr>
+
+  <h3 class="anchor" id="disqualify">disqualify.py — Adversarial Profile Detection</h3>
+  <p>Identifies and removes adversarial profiles before scoring. Three hard-disqualify checks, plus soft penalties for borderline profiles.</p>
+
+  <div class="fn-sig">
+    <div class="sig">is_honeypot(candidate: dict) → Tuple[bool, str]</div>
+    <p>Checks three conditions in order: <strong>YoE inflation</strong> (claimed YoE exceeds career timeline + buffer), <strong>Ghost profile</strong> (completeness &lt;5%, no verified contact), <strong>Pure research</strong> (all roles researcher, zero production signals). Returns <code>(True, reason)</code> or <code>(False, "")</code>.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">should_hard_penalize(candidate: dict) → Tuple[float, str]</div>
+    <p>Returns cumulative penalty multiplier and reasons string. All-consulting → ×0.15, No-code-18mo → ×0.80, CV/speech/robotics-only → ×0.85. Multipliers stack multiplicatively.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Helper</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>parse_year(date_str)</code></td><td>Extracts 4-digit year; handles "present"/"now" → CURRENT_YEAR</td></tr>
+      <tr><td><code>_all_roles_at_consulting(candidate)</code></td><td>True if every role's company matches a known consulting firm</td></tr>
+      <tr><td><code>_is_pure_research(candidate)</code></td><td>All roles titled "researcher" + no production signal keywords</td></tr>
+      <tr><td><code>_is_no_code_18mo(candidate)</code></td><td>Last activity &gt;548 days ago + no current role</td></tr>
+      <tr><td><code>_is_cv_speech_robotics_only(candidate)</code></td><td>Has CV/speech/robotics skills but zero retrieval signals</td></tr>
+    </tbody>
+  </table></div>
+
+  <hr>
+
+  <h3 class="anchor" id="signals">signals.py — Sub-Score Computation</h3>
+  <p>Computes the four primary sub-scores. Each returns a float in <code>[0, 1]</code>.</p>
+
+  <div class="fn-sig">
+    <div class="sig">compute_technical_fit(candidate: dict) → float</div>
+    <p>Must-have match (75% weight) across declared skills (proficiency-weighted) and career descriptions + nice-to-have match (25%) + production bonus (capped 0.10) + retrieval bonus (capped 0.10).</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">compute_career_quality(candidate: dict) → float</div>
+    <p>Non-consulting role (+0.30), ML/AI title at ≥50-person company (+0.15), median tenure ≥36mo (+0.25) / ≥24mo (+0.20) / ≥18mo (+0.05), upward title progression (+0.20).</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">compute_availability_signal(candidate: dict) → float</div>
+    <p>Open-to-work flag (+0.25), recency (≤30d +0.20, ≤90d +0.12, ≤180d +0.06), recruiter response rate (×0.15), interview completion rate (×0.15), notice period (≤30d +0.05, ≤60d +0.035).</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">compute_seniority_fit(candidate: dict) → float</div>
+    <p>YoE bands: 6–9yr → 1.0 · 4–5/10–12yr → 0.7 · 3/13–15yr → 0.4 · else → 0.1. Tier-1 education +0.05, Tier-2 +0.02.</p>
+  </div>
+
+  <hr>
+
+  <h3 class="anchor" id="evidence">evidence.py — Provenance &amp; Reasoning</h3>
+  <p>Traces every JD requirement match back to the specific skill or career sentence that triggered it. Generates honest, evidence-cited reasoning strings for the output CSV.</p>
+
+  <div class="fn-sig">
+    <div class="sig">collect_evidence(candidate: dict) → dict</div>
+    <p>Returns structured evidence dict with <code>matched</code> (criterion, match_type, skill_name, snippet), <code>missing_must_haves</code>, <code>production</code> keywords, and <code>retrieval</code> keywords.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">generate_reasoning(candidate: dict, evidence: dict = None, max_len: int = 300) → str</div>
+    <p>Produces one-liner reasoning string (120–300 chars). Format: <em>"6.7yr Lead AI Engineer at Razorpay; strong match on embeddings, vector search, python; production evidence (serving, ndcg); actively looking, 73% response rate, 30d notice."</em> Only claims what evidence actually contains.</p>
+  </div>
+
+  <hr>
+
+  <h3 class="anchor" id="engine">engine.py — Vectorized Ranking Engine</h3>
+  <p>All ranking math as vectorized NumPy operations. Every operation works on precomputed matrices — no per-candidate loops.</p>
+
+  <div class="fn-sig">
+    <div class="sig">build_matrices(candidate_ids, subscores_dict) → Tuple[np.ndarray, np.ndarray]</div>
+    <p>Packs sub-score dicts into dense float32 arrays: <code>subscore_matrix</code> (N×4) and <code>penalties</code> (N,).</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">compute_scores(subscore_matrix, penalties, semantic_sim, weights) → np.ndarray</div>
+    <p>Core scoring operation: <code>scores = penalties × (subscore_matrix @ weight_vector + w_semantic × semantic_sim)</code></p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">top_k_indices(scores: np.ndarray, k: int) → np.ndarray</div>
+    <p>Selects top-k candidates via <code>np.argsort</code> with deterministic tie-breaking by candidate index.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">mmr_rerank(candidate_idx, scores, embeddings, lambda_relevance, k) → List[int]</div>
+    <p>Maximal Marginal Relevance. <code>MMR(d) = λ × score(d) − (1−λ) × max_similarity(d, already_selected)</code>. At λ=1.0 → pure score ranking.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">stability_analysis(subscore_matrix, penalties, semantic_sim, weights, k, n_trials=200, jitter=0.20, seed=42) → Dict[int, float]</div>
+    <p>200 Monte Carlo trials with ±20% weight perturbation. Returns per-candidate frequency of appearing in top-k. Candidates with &gt;95% frequency are stable regardless of exact weight choice.</p>
+  </div>
+
+  <hr>
+
+  <h3 class="anchor" id="precompute">precompute.py — Phase A Pipeline</h3>
+  <p>The expensive one-time computation phase. Streams 487 MB JSONL, removes adversarial profiles, embeds all valid profiles with <code>all-MiniLM-L6-v2</code>, computes all sub-scores, serializes to disk.</p>
+
+  <div class="fn-sig">
+    <div class="sig">main() → None</div>
+    <p>Full pipeline: create ARTIFACTS_DIR → load SentenceTransformer on configured device → embed JD → stream JSONL in 1K-line chunks (disqualify, blob, sub-scores) → batch-encode (batch=2048) → save all artifacts.</p>
+  </div>
+
+  <div class="callout-amber callout"><strong>Runtime:</strong> ~4 min on NVIDIA RTX 3050 (6 GB GPU). ~30 min CPU-only. Set <code>EMBEDDING_DEVICE=cuda</code> to use GPU.</div>
+
+  <hr>
+
+  <h3 class="anchor" id="rank">rank.py — Phase B Pipeline</h3>
+  <p>Loads precomputed artifacts, calculates composite scores, selects top 100, generates evidence-based reasoning, writes validated CSV.</p>
+
+  <div class="fn-sig">
+    <div class="sig">build_offset_index() → dict</div>
+    <p>Builds <code>candidate_id → byte_offset</code> by scanning the JSONL once (~1.5 s). Enables O(1) random access to any candidate's full record without loading the 487 MB file.</p>
+  </div>
+  <div class="fn-sig">
+    <div class="sig">main() → None</div>
+    <p>Load artifacts → build matrices → cosine similarity → composite scores → top-100 → byte-offset index → load full records → evidence + reasoning → enforce monotonic ordering → write CSV → validate.</p>
+  </div>
+
+  <hr>
+
+  <h3 class="anchor" id="app">app.py — Interactive Dashboard</h3>
+  <p>Six-tab Streamlit workbench. All scoring is a single float32 matrix multiply over precomputed artifacts — ~50 ms for 100K candidates regardless of which tab or slider is active.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tab</th><th>Features</th></tr></thead>
+    <tbody>
+      <tr><td>🏆 Shortlist</td><td>Paginated candidate cards · stability badges · score bars · evidence chips · missing must-haves</td></tr>
+      <tr><td>⚖️ Compare</td><td>Radar chart side-by-side for 2–4 candidates across all 5 score dimensions</td></tr>
+      <tr><td>📊 Insights</td><td>Score histogram + fairness audit (education tier, country, YoE distributions vs pool)</td></tr>
+      <tr><td>🛡️ Integrity</td><td>Disqualification log by category with concrete detection examples</td></tr>
+      <tr><td>📤 Export</td><td>Submission CSV · personalized outreach pack (top-10) · ranking config JSON</td></tr>
+      <tr><td>📖 Methodology</td><td>Live formula display + integrity rule documentation</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Sidebar Control</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Custom JD</td><td>Paste any job description → embedded on the fly → instant re-rank all 100K</td></tr>
+      <tr><td>Weight sliders</td><td>Drag any of 5 signals → 100K re-score in ~50 ms</td></tr>
+      <tr><td>Diversity (MMR)</td><td>λ slider → penalize near-duplicate profiles in shortlist</td></tr>
+      <tr><td>Blind screening</td><td>Hides names, companies, institutions to reduce reviewer bias</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- SCORING METHODOLOGY -->
+  <h2 class="anchor" id="scoring">Scoring Methodology</h2>
+
+  <h3 class="anchor" id="formula">Composite Formula</h3>
+  <pre>S = penalty_multiplier × (
+    0.35 × technical_fit
+  + 0.25 × career_quality
+  + 0.20 × availability_signal
+  + 0.12 × seniority_fit
+  + 0.08 × semantic_similarity
+)
+
+<span class="hl-muted">All sub-scores ∈ [0, 1]
+penalty_multiplier ∈ [0.12, 1.0]
+Final score scaled to [0, 10] in output CSV</span></pre>
+
+  <h3 class="anchor" id="technical-fit">Technical Fit (0.35)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Criterion</th><th>Weight</th><th>Keywords (sample)</th></tr></thead>
+    <tbody>
+      <tr><td>Embeddings &amp; Retrieval</td><td>0.25</td><td>embedding, retrieval, vector search, dense retrieval, RAG, faiss...</td></tr>
+      <tr><td>Vector Databases</td><td>0.20</td><td>vector database, faiss, pinecone, weaviate, milvus, qdrant, chroma...</td></tr>
+      <tr><td>Python</td><td>0.15</td><td>python, pytorch, tensorflow, jax, numpy...</td></tr>
+      <tr><td>Eval Frameworks</td><td>0.15</td><td>evaluation, ndcg, mrr, map, recall, precision...</td></tr>
+      <tr><td>LLM Fine-tuning <span class="tag ti">nice-to-have</span></td><td>0.10</td><td>fine-tuning, lora, qlora, rlhf, peft, instruction tuning...</td></tr>
+      <tr><td>Learning to Rank <span class="tag ti">nice-to-have</span></td><td>0.10</td><td>learning to rank, lambdamart, listwise, pairwise...</td></tr>
+      <tr><td>HR-Tech <span class="tag ti">nice-to-have</span></td><td>0.05</td><td>recruiter, talent, hiring, ats, applicant...</td></tr>
+    </tbody>
+  </table></div>
+  <p>Proficiency weights: expert=1.0, advanced=0.75, intermediate=0.4, beginner=0.1. Platform assessment scores override self-reported proficiency.</p>
+
+  <h3 class="anchor" id="career-quality">Career Quality (0.25)</h3>
+  <ul style="margin:0.5rem 0 1rem 1.2rem;font-size:0.9rem;color:#cbd5e1;">
+    <li>Non-consulting role presence → +0.30</li>
+    <li>ML/AI title at company with ≥50 employees → +0.15</li>
+    <li>Median tenure ≥36 months → +0.25 · ≥24 months → +0.20 · ≥18 months → +0.05</li>
+    <li>Upward title progression (last role seniority &gt; first) → +0.20</li>
+  </ul>
+
+  <h3 class="anchor" id="availability">Availability Signal (0.20)</h3>
+  <ul style="margin:0.5rem 0 1rem 1.2rem;font-size:0.9rem;color:#cbd5e1;">
+    <li><code>open_to_work_flag</code> → +0.25</li>
+    <li>Last active ≤30d → +0.20 · ≤90d → +0.12 · ≤180d → +0.06</li>
+    <li><code>recruiter_response_rate</code> → × 0.15</li>
+    <li><code>interview_completion_rate</code> → × 0.15</li>
+    <li>Active applications (&gt;0) → +0.05</li>
+    <li>Notice period ≤30d → +0.05 · ≤60d → +0.035</li>
+  </ul>
+
+  <h3 class="anchor" id="seniority">Seniority Fit (0.12)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>YoE Range</th><th>Score</th></tr></thead>
+    <tbody>
+      <tr><td>6–9 years (ideal for Senior AI Engineer)</td><td>1.0</td></tr>
+      <tr><td>4–5 or 10–12 years</td><td>0.7</td></tr>
+      <tr><td>3 or 13–15 years</td><td>0.4</td></tr>
+      <tr><td>&lt;3 or &gt;15 years</td><td>0.1</td></tr>
+    </tbody>
+  </table></div>
+  <p>Education bonus: Tier-1 (IIT, IISc, NIT, BITS...) → +0.05. Tier-2 (DTU, VIT, SRM...) → +0.02.</p>
+
+  <h3 class="anchor" id="semantic">Semantic Similarity (0.08)</h3>
+  <p>Cosine similarity between the candidate's 384-dim <code>all-MiniLM-L6-v2</code> embedding and the JD embedding. This is the "safety net" — catches strong engineers whose plain-language descriptions miss keyword checks.</p>
+
+  <h3 class="anchor" id="penalties">Penalty Multipliers</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Condition</th><th>Multiplier</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td>All roles at consulting firms (TCS, Infosys, Wipro, Capgemini, Accenture, HCL...)</td><td style="color:#ef4444;font-weight:700">× 0.15</td><td>Pure-consulting careers rarely involve the depth of AI/ML work required</td></tr>
+      <tr><td>No coding activity in 18+ months</td><td style="color:var(--amber);font-weight:700">× 0.80</td><td>Skills may be stale in a fast-moving field</td></tr>
+      <tr><td>CV/speech/robotics only, no retrieval signals</td><td style="color:var(--cyan);font-weight:700">× 0.85</td><td>Domain misalignment with this JD</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout-amber callout">Penalties stack multiplicatively: all-consulting + stale = 0.15 × 0.80 = <strong>0.12</strong>.</div>
+
+  <!-- DATA SCHEMAS -->
+  <h2 class="anchor" id="input-schema">Data Schemas</h2>
+
+  <h3>Input: candidates.jsonl</h3>
+  <pre>{
+  <span class="hl-cyan">"candidate_id"</span>: <span class="hl-green">"CAND_0000001"</span>,
+  <span class="hl-cyan">"profile"</span>: {
+    <span class="hl-cyan">"name"</span>: <span class="hl-green">"..."</span>,
+    <span class="hl-cyan">"headline"</span>: <span class="hl-green">"Senior ML Engineer | NLP &amp; Search"</span>,
+    <span class="hl-cyan">"years_of_experience"</span>: <span class="hl-amber">7</span>,
+    <span class="hl-cyan">"current_title"</span>: <span class="hl-green">"Senior ML Engineer"</span>,
+    <span class="hl-cyan">"current_company"</span>: <span class="hl-green">"Razorpay"</span>,
+    <span class="hl-cyan">"company_size"</span>: <span class="hl-green">"1001-5000"</span>
+  },
+  <span class="hl-cyan">"career_history"</span>: [{
+    <span class="hl-cyan">"company"</span>: <span class="hl-green">"Razorpay"</span>, <span class="hl-cyan">"title"</span>: <span class="hl-green">"Senior ML Engineer"</span>,
+    <span class="hl-cyan">"start_date"</span>: <span class="hl-green">"2022-03"</span>, <span class="hl-cyan">"end_date"</span>: <span class="hl-green">"present"</span>,
+    <span class="hl-cyan">"is_current"</span>: <span class="hl-amber">true</span>,
+    <span class="hl-cyan">"description"</span>: <span class="hl-green">"Built embedding-based retrieval pipeline..."</span>
+  }],
+  <span class="hl-cyan">"skills"</span>: [{ <span class="hl-cyan">"name"</span>: <span class="hl-green">"Python"</span>, <span class="hl-cyan">"proficiency"</span>: <span class="hl-green">"expert"</span> }],
+  <span class="hl-cyan">"redrob_signals"</span>: {
+    <span class="hl-cyan">"profile_completeness_score"</span>: <span class="hl-amber">92</span>,
+    <span class="hl-cyan">"open_to_work_flag"</span>: <span class="hl-amber">true</span>,
+    <span class="hl-cyan">"recruiter_response_rate"</span>: <span class="hl-amber">0.73</span>,
+    <span class="hl-cyan">"notice_period_days"</span>: <span class="hl-amber">30</span>,
+    <span class="hl-cyan">"last_active_date"</span>: <span class="hl-green">"2026-05-28"</span>,
+    <span class="hl-cyan">"verified_email"</span>: <span class="hl-amber">true</span>
+  }
+}</pre>
+
+  <h3 class="anchor" id="artifacts-schema">Internal: Artifacts</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>File</th><th>Format</th><th>Shape</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>embeddings.npy</td><td>float32</td><td>(99965, 384)</td><td>Unit-normalized profile embeddings</td></tr>
+      <tr><td>candidate_ids.npy</td><td>str array</td><td>(99965,)</td><td>Index-aligned with embeddings</td></tr>
+      <tr><td>jd_embedding.npy</td><td>float32</td><td>(384,)</td><td>JD text embedding</td></tr>
+      <tr><td>subscores.pkl</td><td>Python dict</td><td>99965 entries</td><td>candidate_id → {technical_fit, career_quality, availability_signal, seniority_fit, penalty_multiplier, top_skills, ...}</td></tr>
+      <tr><td>disqualified.json</td><td>JSON list</td><td>~35 entries</td><td>[{candidate_id, disqualify_type, reason}, ...]</td></tr>
+      <tr><td>demographics.csv</td><td>CSV</td><td>~100K rows</td><td>Cached pool demographics for fairness audit</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="anchor" id="output-schema">Output: submission.csv</h3>
+  <pre>candidate_id,rank,score,reasoning
+<span class="hl-green">CAND_0081846</span>,<span class="hl-amber">1</span>,<span class="hl-amber">8.70</span>,<span class="hl-green">"6.7yr Lead AI Engineer at Razorpay; strong match on embeddings, vector search,
+python, information retrieval; production evidence (serving, ndcg);
+actively looking, 73% response rate, 30d notice."</span></pre>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Rule</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Exactly 100 rows (ranks 1–100)</td><td>✅ enforced</td></tr>
+      <tr><td>Scores non-increasing by rank</td><td>✅ monotonic enforcement in rank.py</td></tr>
+      <tr><td>Tie-breaking by candidate_id ascending</td><td>✅ lexsort in engine.top_k_indices</td></tr>
+      <tr><td>candidate_id format CAND_XXXXXXX</td><td>✅ validated</td></tr>
+      <tr><td>Reasoning ≤300 chars, no newlines</td><td>✅ enforced in evidence.generate_reasoning</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- DEPLOYMENT -->
+  <h2 class="anchor" id="deployment">Deployment</h2>
+
+  <h3>Local Development</h3>
+  <pre>EMBEDDING_DEVICE=cuda python precompute.py  <span class="hl-muted"># Phase A: ~4 min GPU</span>
+python rank.py                               <span class="hl-muted"># Phase B: ~3 s</span>
+streamlit run app.py                         <span class="hl-muted"># Dashboard: http://localhost:8501</span></pre>
+
+  <h3>HuggingFace Space</h3>
+  <p>Live demo at <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank">huggingface.co/spaces/DevanshSrajput/SignalHire</a> — Docker SDK with precomputed artifacts for the 50-candidate sample dataset. All dashboard tabs work identically to the full 100K version.</p>
+
+  <h3 class="anchor" id="sandbox">Sandbox Constraints</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Constraint</th><th>How It's Met</th></tr></thead>
+    <tbody>
+      <tr><td>CPU-only ranking</td><td>Phase B uses only NumPy — zero GPU dependency</td></tr>
+      <tr><td>16 GB RAM limit</td><td>Streaming JSONL ingestion, batched embedding, vectorized ops. Peak ~14 GB</td></tr>
+      <tr><td>No network access</td><td>Embedding model pre-downloaded at Docker build time</td></tr>
+      <tr><td>&lt;5 minute ranking</td><td>np.argsort O(N) + byte-offset seek index. Total ~3 s</td></tr>
+      <tr><td>Deterministic results</td><td>SEED=42 enforced. Reproducible on re-run</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="anchor" id="performance">Performance Benchmarks</h3>
+  <p><em>Measured on NVIDIA RTX 3050 (6 GB) + 12-core CPU</em></p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Phase</th><th>Device</th><th>Time</th><th>Throughput</th></tr></thead>
+    <tbody>
+      <tr><td>Precompute (100K → 99,965)</td><td>GPU (CUDA)</td><td>~4.2 min</td><td>~400 candidates/s</td></tr>
+      <tr><td>Offset index build</td><td>CPU</td><td>~1.5 s</td><td>~67K lines/s</td></tr>
+      <tr><td>Ranking + validation</td><td>CPU</td><td>~3.1 s</td><td>~32K candidates/s</td></tr>
+      <tr><td>Dashboard re-rank</td><td>CPU</td><td>~50 ms</td><td>2M candidates/s</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- INITIAL DOCS -->
+  <h2 class="anchor" id="initial-docs">Initial Documentation Archive</h2>
+  <p>The original planning documents that guided SignalHire's development are preserved in the <code>Initial-Documentation/</code> directory. These were the blueprints — the code is the building.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Document</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/RecruiterIQ_PRD.md" target="_blank">RecruiterIQ_PRD.md</a></td><td>Product Requirements Document — problem statement, scoring formula, evaluation metrics</td></tr>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/TRD.md" target="_blank">TRD.md</a></td><td>Technical Requirements Document — functional and non-functional requirements</td></tr>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/BACKEND_SCHEMA.md" target="_blank">BACKEND_SCHEMA.md</a></td><td>Data Models &amp; Interfaces — complete schema definitions for all I/O</td></tr>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/APP_FLOW.md" target="_blank">APP_FLOW.md</a></td><td>Application Flow — system diagrams, state machines, error handling</td></tr>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/IMPLEMENTATION_PLAN.md" target="_blank">IMPLEMENTATION_PLAN.md</a></td><td>Build Execution Roadmap — 9-phase plan with code snippets and risk register</td></tr>
+      <tr><td><a href="https://github.com/DevanshSrajput/SignalHire/blob/main/Initial-Documentation/UIUX_DESIGN.md" target="_blank">UIUX_DESIGN.md</a></td><td>UI/UX Design — dashboard layout, color palette, component specs</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="anchor" id="prd">PRD — Product Requirements</h3>
+  <p>The RecruiterIQ PRD defines the core problem: rank 100K candidates for a Senior AI Engineer role, defeat adversarial profiles, and surface the top 100 with honest evidence-based reasoning. It established the five-signal scoring formula and the evaluation criteria (recall of known good candidates, 0 honeypots in top 100).</p>
+
+  <h3 class="anchor" id="trd">TRD — Technical Requirements</h3>
+  <p>The TRD translates the PRD into hard constraints: CPU-only inference, 16 GB RAM limit, 5-minute wall-clock budget, no network access, deterministic reproducibility. It specified the offline precompute architecture as the solution to the GPU/CPU split.</p>
+
+  <h3 class="anchor" id="app-flow">App Flow</h3>
+  <p>The APP_FLOW document traces every user interaction through the system: from JSONL load to artifact production (Phase A), from artifact load to CSV output (Phase B), and from sidebar control to live matrix multiply (Dashboard). It includes the state machine for the Streamlit session and error handling for missing artifacts.</p>
+
+  <h3 class="anchor" id="impl-plan">Implementation Plan</h3>
+  <p>A 9-phase build roadmap: (1) config skeleton → (2) keyword matching → (3) disqualification → (4) sub-scores → (5) evidence → (6) vectorized engine → (7) precompute → (8) rank → (9) dashboard. Each phase has acceptance criteria, code snippets, and a risk register entry.</p>
+
+  <h3 class="anchor" id="uiux">UI/UX Design</h3>
+  <p>The UIUX document specifies the exact layout of each Streamlit tab, the color palette (dark theme with indigo/violet/green/amber accents), component hierarchy (cards → badges → bars → chips), and the sidebar control order. The stability badge design and MMR slider range were specified here.</p>
+
+  <!-- FAQ -->
+  <h2 class="anchor" id="faq">FAQ</h2>
+
+  <h3>Why two phases instead of one?</h3>
+  <p>The sandbox is CPU-only with a 5-minute time limit. Precomputing embeddings (GPU) separately keeps Phase B well under the budget.</p>
+
+  <h3>How does it handle keyword stuffers?</h3>
+  <p>Multi-signal scoring. A candidate who stuffs "Python" 50 times gets high technical_fit but still needs career_quality, availability_signal, and seniority_fit. No single signal can game the composite score.</p>
+
+  <h3>Why <code>all-MiniLM-L6-v2</code> over larger models?</h3>
+  <p>Best accuracy-to-speed tradeoff for 100K profiles. 384 dimensions, ~60 MB model, &lt;200 ms per batch of 2048. Larger models would exceed the RAM/time budget.</p>
+
+  <h3>Why is the consulting penalty so severe (×0.15)?</h3>
+  <p>For this specific JD, all-consulting careers at service firms rarely involve the depth of AI/ML work required. In a production system, it would be a configurable threshold, not a constant.</p>
+
+  <h3>How is the stability badge calculated?</h3>
+  <p>200 Monte Carlo trials with ±20% random weight perturbation. Frequency in top-100: &gt;95% → "stable", 70–95% → "moderate", &lt;70% → "fragile".</p>
+
+  <a href="#top" class="back-top">↑ Back to top</a>
+
+</main>
+</div>
+
+<script>
+// Highlight active sidebar link on scroll
+const headings = document.querySelectorAll('.anchor');
+const sideLinks = document.querySelectorAll('aside a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sideLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`aside a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px' });
+headings.forEach(h => observer.observe(h));
+</script>
+</body>
+</html>

@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalHire — AI-Powered Candidate Ranking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #07070d;
+  --bg2:       #0e0e1a;
+  --bg3:       #13132a;
+  --indigo:    #6366f1;
+  --violet:    #8b5cf6;
+  --pink:      #ec4899;
+  --amber:     #f59e0b;
+  --green:     #10b981;
+  --cyan:      #06b6d4;
+  --red:       #ef4444;
+  --text:      #f1f5f9;
+  --muted:     #94a3b8;
+  --border:    rgba(99,102,241,0.18);
+  --glow:      rgba(99,102,241,0.35);
+  --card:      rgba(14,14,26,0.85);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--indigo); border-radius: 3px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 3rem;
+  background: rgba(7,7,13,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.4rem;
+  background: linear-gradient(90deg, var(--indigo), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.9rem;
+  font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-btn {
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  color: #fff !important; padding: 0.5rem 1.2rem; border-radius: 8px;
+  font-weight: 600 !important;
+}
+.nav-btn:hover { opacity: 0.9; }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh;
+  display: grid; place-items: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-glow {
+  position: absolute;
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 60%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; text-align: center; max-width: 960px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.35);
+  padding: 0.4rem 1rem; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 600; color: var(--indigo);
+  margin-bottom: 2rem; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.hero-badge span { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700; line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.3em;
+}
+.grad-text {
+  background: linear-gradient(135deg, var(--indigo) 0%, var(--pink) 50%, var(--amber) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--muted); max-width: 640px; margin: 0 auto 2.5rem;
+  font-weight: 400;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 2rem; border-radius: 10px;
+  font-weight: 600; font-size: 0.95rem; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  color: #fff;
+  box-shadow: 0 0 30px rgba(99,102,241,0.4);
+}
+.btn-primary:hover { box-shadow: 0 0 50px rgba(99,102,241,0.6); }
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); }
+.btn-hf {
+  background: linear-gradient(135deg, #f6a800, #ff6b35);
+  color: #fff;
+  box-shadow: 0 0 30px rgba(246,168,0,0.3);
+}
+.btn-hf:hover { box-shadow: 0 0 50px rgba(246,168,0,0.5); }
+
+/* stats */
+.hero-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; max-width: 720px; margin: 0 auto;
+}
+.stat {
+  background: var(--bg2); padding: 1.5rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.2rem; font-weight: 700; line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-lbl { font-size: 0.78rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ─── SECTION COMMONS ─── */
+section { position: relative; z-index: 1; }
+.section-inner { max-width: 1200px; margin: 0 auto; padding: 6rem 2rem; }
+.section-label {
+  display: inline-block;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--indigo);
+  margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.section-sub { color: var(--muted); font-size: 1.1rem; max-width: 560px; }
+
+/* ─── DIVIDER ─── */
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+
+/* ─── FEATURES ─── */
+#features { background: var(--bg2); }
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+  margin-top: 4rem;
+}
+.feature-card {
+  background: var(--bg2); padding: 2rem;
+  transition: background 0.3s;
+}
+.feature-card:hover { background: var(--bg3); }
+.feature-icon {
+  font-size: 2rem; margin-bottom: 1rem; display: block;
+}
+.feature-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem;
+}
+.feature-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+.tag {
+  display: inline-block; margin-top: 0.8rem;
+  font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.7rem;
+  border-radius: 999px; letter-spacing: 0.05em;
+}
+.tag-indigo { background: rgba(99,102,241,0.15); color: var(--indigo); border: 1px solid rgba(99,102,241,0.3); }
+.tag-green  { background: rgba(16,185,129,0.15); color: var(--green);  border: 1px solid rgba(16,185,129,0.3); }
+.tag-amber  { background: rgba(245,158,11,0.15);  color: var(--amber);  border: 1px solid rgba(245,158,11,0.3); }
+.tag-pink   { background: rgba(236,72,153,0.15);  color: var(--pink);   border: 1px solid rgba(236,72,153,0.3); }
+.tag-cyan   { background: rgba(6,182,212,0.15);   color: var(--cyan);   border: 1px solid rgba(6,182,212,0.3); }
+
+/* ─── PIPELINE ─── */
+#pipeline { background: var(--bg); }
+.pipeline-wrap { margin-top: 4rem; }
+.pipeline-phase {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2.5rem;
+  margin-bottom: 1rem;
+  background: var(--bg2);
+  overflow: hidden;
+}
+.pipeline-phase::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.phase-a::before { background: linear-gradient(90deg, var(--indigo), var(--violet)); }
+.phase-b::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.phase-dash::before { background: linear-gradient(90deg, var(--amber), var(--pink)); }
+.phase-header {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+}
+.phase-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; font-weight: 700;
+  padding: 0.3rem 0.8rem; border-radius: 6px;
+}
+.phase-badge-a { background: rgba(99,102,241,0.2); color: var(--indigo); }
+.phase-badge-b { background: rgba(16,185,129,0.2); color: var(--green); }
+.phase-badge-d { background: rgba(245,158,11,0.2); color: var(--amber); }
+.phase-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600; font-size: 1.15rem;
+}
+.phase-meta { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
+.phase-steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;
+}
+.step {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem;
+}
+.step h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step p { font-size: 0.8rem; color: var(--muted); }
+.arrow-down {
+  text-align: center; font-size: 1.5rem; color: var(--muted);
+  margin: 0.5rem 0;
+}
+.artifact-list {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem;
+}
+.artifact {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; padding: 0.3rem 0.8rem;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 6px; color: var(--indigo);
+}
+
+/* ─── SCORING ─── */
+#scoring { background: var(--bg2); }
+.scoring-grid {
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 2rem; margin-top: 3rem;
+  align-items: start;
+}
+.formula-box {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+}
+.formula-box pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; color: var(--text);
+  white-space: pre-wrap; line-height: 2;
+}
+.signal-bars { display: flex; flex-direction: column; gap: 1rem; }
+.signal-bar { }
+.signal-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.4rem;
+}
+.signal-name { font-weight: 600; font-size: 0.9rem; }
+.signal-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; }
+.bar-track {
+  height: 10px; background: rgba(255,255,255,0.05);
+  border-radius: 999px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; border-radius: 999px;
+  animation: grow 1.5s ease-out forwards;
+  transform-origin: left;
+}
+@keyframes grow { from { width: 0%; } }
+
+/* signal table */
+.signal-table { width: 100%; border-collapse: collapse; margin-top: 3rem; }
+.signal-table th {
+  text-align: left; padding: 0.8rem 1rem;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); border-bottom: 1px solid var(--border);
+}
+.signal-table td { padding: 1rem; border-bottom: 1px solid rgba(99,102,241,0.08); vertical-align: top; }
+.signal-table td:first-child { font-weight: 600; }
+.signal-table td:nth-child(2) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; font-weight: 700;
+}
+.signal-table tr:hover td { background: rgba(99,102,241,0.04); }
+
+/* ─── DISQUALIFICATION ─── */
+#adversarial { background: var(--bg); }
+.disq-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden; margin-top: 3rem;
+}
+.disq-card { background: var(--bg2); padding: 2rem; }
+.disq-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+.disq-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.disq-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+.code-rule {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.8rem; color: var(--cyan); line-height: 1.8;
+}
+.penalty-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 3rem;
+}
+.penalty-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.penalty-x {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 3.5rem; line-height: 1;
+}
+.penalty-card p { font-size: 0.82rem; color: var(--muted); }
+
+/* ─── DASHBOARD TABS ─── */
+#dashboard { background: var(--bg2); }
+.tabs-preview { margin-top: 3rem; }
+.tab-list { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.tab-btn {
+  padding: 0.5rem 1.2rem; border-radius: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--muted); font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.tab-btn.active, .tab-btn:hover {
+  background: rgba(99,102,241,0.15);
+  border-color: rgba(99,102,241,0.4);
+  color: var(--text);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.tab-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+}
+.tab-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+.tab-features-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.tab-features-list li { display: flex; gap: 0.8rem; font-size: 0.9rem; }
+.tab-features-list li::before { content: '→'; color: var(--indigo); font-weight: 700; flex-shrink: 0; }
+
+/* ─── PERFORMANCE ─── */
+#performance { background: var(--bg); }
+.perf-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden; margin-top: 3rem;
+}
+.perf-card {
+  background: var(--bg2); padding: 2rem; text-align: center;
+}
+.perf-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 3rem; line-height: 1; margin-bottom: 0.3rem;
+}
+.perf-sub { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.perf-detail { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
+
+/* ─── ARCHITECTURE ─── */
+#architecture { background: var(--bg2); }
+.dep-graph {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem; margin-top: 3rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  line-height: 2.2; color: var(--text);
+}
+.dep-graph .layer-label { color: var(--muted); font-size: 0.72rem; }
+.dep-graph .leaf { color: var(--cyan); }
+.dep-graph .mid { color: var(--green); }
+.dep-graph .top { color: var(--indigo); }
+.dep-graph .arrow { color: var(--violet); }
+.output-schema {
+  margin-top: 3rem; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden;
+}
+.schema-header {
+  padding: 1rem 1.5rem; background: rgba(99,102,241,0.1);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+  color: var(--indigo);
+}
+.schema-body { padding: 1.5rem; }
+.schema-body pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; line-height: 1.8; color: var(--text);
+  white-space: pre-wrap;
+}
+.kw-string { color: var(--green); }
+.kw-num    { color: var(--amber); }
+.kw-key    { color: var(--cyan); }
+
+/* ─── QUICK START ─── */
+#quickstart { background: var(--bg); }
+.qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+.qs-step {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; position: relative;
+}
+.qs-num {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  font-family: 'Bebas Neue', cursive; font-size: 3rem; line-height: 1;
+  color: rgba(99,102,241,0.15);
+}
+.qs-step h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.code-block {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  color: var(--green); line-height: 1.8; overflow-x: auto;
+}
+.code-block .comment { color: var(--muted); }
+.code-block .cmd { color: var(--cyan); }
+
+/* ─── TEAM ─── */
+#team { background: var(--bg2); }
+.team-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap: 1.5rem; margin-top: 3rem;
+}
+.team-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem; text-align: center;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  position: relative; overflow: hidden;
+}
+.team-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.team-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.team-card:hover { border-color: rgba(99,102,241,0.4); }
+.team-card:hover::before { opacity: 1; }
+.team-card:nth-child(1)::before { background: linear-gradient(90deg, var(--indigo), var(--pink)); }
+.team-card:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan), var(--green)); }
+.team-card:nth-child(3)::before { background: linear-gradient(90deg, var(--amber), var(--pink)); }
+.team-card:nth-child(4)::before { background: linear-gradient(90deg, var(--violet), var(--cyan)); }
+.team-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--border); margin: 0 auto 1rem;
+  display: block; object-fit: cover;
+}
+.team-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem;
+}
+.team-role { font-size: 0.8rem; color: var(--indigo); font-weight: 600; margin-bottom: 0.5rem; }
+.team-bio { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 1rem; }
+.team-links { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+.team-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.8rem; border-radius: 6px;
+  font-size: 0.75rem; font-weight: 600; text-decoration: none;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+  color: var(--indigo); transition: all 0.2s;
+}
+.team-link:hover { background: rgba(99,102,241,0.2); }
+.contrib-badge {
+  display: inline-block; margin-top: 0.6rem;
+  font-size: 0.7rem; color: var(--muted);
+}
+
+/* ─── LINKS / ECOSYSTEM ─── */
+#links { background: var(--bg); }
+.links-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 1rem; margin-top: 3rem;
+}
+.link-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+  text-decoration: none; color: var(--text);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.link-card:hover { transform: translateY(-3px); border-color: rgba(99,102,241,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.link-icon { font-size: 2rem; }
+.link-card h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; }
+.link-card p { font-size: 0.82rem; color: var(--muted); }
+.link-arrow { margin-top: auto; color: var(--indigo); font-weight: 700; font-size: 0.85rem; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-logo {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.8rem;
+  background: linear-gradient(90deg, var(--indigo), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+.footer-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+.footer-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-size: 0.78rem; color: var(--muted); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero-stats { grid-template-columns: repeat(2,1fr); }
+  .scoring-grid { grid-template-columns: 1fr; }
+  .disq-grid, .penalty-grid { grid-template-columns: 1fr; }
+  .perf-grid { grid-template-columns: repeat(2,1fr); }
+  .qs-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">🎯 SignalHire</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#scoring">Scoring</a>
+    <a href="docs.html">Docs</a>
+    <a href="#team">Team</a>
+    <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank" class="nav-btn">🤗 Live Demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><span></span>India Runs Hackathon · Redrob AI Challenge 2025</div>
+    <h1><span class="grad-text">Signal</span>Hire</h1>
+    <p class="hero-sub">
+      <strong>100,000 candidate profiles</strong> → <strong>top 100 best matches</strong> in under 3 seconds.
+      Five orthogonal signals. Zero API calls. Full explainability.
+    </p>
+    <div class="hero-cta">
+      <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank" class="btn btn-hf">🤗 Live Demo on HuggingFace</a>
+      <a href="https://github.com/DevanshSrajput/SignalHire" target="_blank" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub Repo
+      </a>
+      <a href="docs.html" class="btn btn-ghost">📚 Full Docs</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-val" style="color:var(--indigo)">100K</div><div class="stat-lbl">Candidates Ranked</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">~3s</div><div class="stat-lbl">Ranking Time</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--amber)">5</div><div class="stat-lbl">Scoring Signals</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--pink)">35</div><div class="stat-lbl">Adversarials Caught</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">Everything a modern<br><span class="grad-text">recruiter needs</span></h2>
+      <p class="section-sub">Eight production-grade features — from adversarial detection to blind screening — in one CPU-native pipeline.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <span class="feature-icon">🚀</span>
+        <h3>GPU-Accelerated Precompute</h3>
+        <p>Embed 100K profiles with all-MiniLM-L6-v2 in ~4 min on GPU. Artifacts cached — ranking is instant on every subsequent run.</p>
+        <span class="tag tag-indigo">Phase A</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Live Re-Ranking</h3>
+        <p>Drag a weight slider → entire 100K pool re-scored in ~50 ms. One float32 matrix multiply. No pipeline re-run needed.</p>
+        <span class="tag tag-green">~50ms</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧠</span>
+        <h3>Evidence-Cited Reasoning</h3>
+        <p>Every score claim traces to a specific declared skill or career sentence. The reasoning string never invents evidence.</p>
+        <span class="tag tag-cyan">Explainable AI</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>Adversarial Detection</h3>
+        <p>Catches honeypots (impossible YoE), ghost profiles (unverified, empty), and pure-research candidates before scoring begins.</p>
+        <span class="tag tag-pink">35 caught</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Fairness Audit</h3>
+        <p>Shortlist vs full-pool distributions by education tier, country, and years of experience — detect encoded bias at a glance.</p>
+        <span class="tag tag-amber">Bias detection</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎛️</span>
+        <h3>Diversity Control (MMR)</h3>
+        <p>Maximal Marginal Relevance slider penalizes near-duplicate profiles so the shortlist surfaces distinct candidate archetypes.</p>
+        <span class="tag tag-indigo">MMR</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🕶️</span>
+        <h3>Blind Screening Mode</h3>
+        <p>Toggle to hide names, companies, and institutions. Reduce reviewer bias — evaluate candidates on skills and signals only.</p>
+        <span class="tag tag-pink">DEI</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📦</span>
+        <h3>One-Command Export</h3>
+        <p>Submission CSV + personalized outreach pack (top-10 draft messages) + reproducible ranking config JSON — all from the dashboard.</p>
+        <span class="tag tag-green">Export</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Architecture</div>
+      <h2 class="section-title">Two-phase<br><span class="grad-text">offline pipeline</span></h2>
+      <p class="section-sub">Expensive GPU work separated from the CPU-only ranking sandbox. Artifacts baked into Docker — zero network at inference time.</p>
+    </div>
+    <div class="pipeline-wrap reveal">
+      <!-- Phase A -->
+      <div class="pipeline-phase phase-a">
+        <div class="phase-header">
+          <span class="phase-badge phase-badge-a">PHASE A</span>
+          <span class="phase-title">Precompute — offline, before submission</span>
+          <span class="phase-meta">GPU ~4 min · CPU ~30 min</span>
+        </div>
+        <div class="phase-steps">
+          <div class="step"><div class="step-num">01</div><h4>Ingest JSONL</h4><p>Stream 100K candidates from 487 MB candidates.jsonl</p></div>
+          <div class="step"><div class="step-num">02</div><h4>Disqualify</h4><p>Hard-remove honeypots, ghosts, pure-research profiles</p></div>
+          <div class="step"><div class="step-num">03</div><h4>Build Profile Blob</h4><p>Headline + summary + career descriptions + top skills → 1024 char</p></div>
+          <div class="step"><div class="step-num">04</div><h4>Batch Embed</h4><p>all-MiniLM-L6-v2 · batch=2048 · 384-dim normalized vectors</p></div>
+          <div class="step"><div class="step-num">05</div><h4>Compute Sub-Scores</h4><p>Technical fit, career quality, availability, seniority per candidate</p></div>
+          <div class="step"><div class="step-num">06</div><h4>Serialize</h4><p>embeddings.npy · subscores.pkl · disqualified.json · candidate_ids.npy</p></div>
+        </div>
+        <div class="artifact-list" style="margin-top:1.5rem;">
+          <span class="artifact">embeddings.npy (~147 MB)</span>
+          <span class="artifact">candidate_ids.npy</span>
+          <span class="artifact">jd_embedding.npy</span>
+          <span class="artifact">subscores.pkl (~7 MB)</span>
+          <span class="artifact">disqualified.json</span>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <!-- Phase B -->
+      <div class="pipeline-phase phase-b">
+        <div class="phase-header">
+          <span class="phase-badge phase-badge-b">PHASE B</span>
+          <span class="phase-title">Ranking — CPU-only sandbox</span>
+          <span class="phase-meta">~3 s · no network · 16 GB RAM</span>
+        </div>
+        <div class="phase-steps">
+          <div class="step"><div class="step-num">01</div><h4>Load Artifacts</h4><p>Memory-map numpy arrays — no full file parse</p></div>
+          <div class="step"><div class="step-num">02</div><h4>Cosine Similarity</h4><p>embeddings @ jd_embedding — single dot product broadcast</p></div>
+          <div class="step"><div class="step-num">03</div><h4>Composite Score</h4><p>penalty × (subscore_matrix @ weights + w_sem × sim)</p></div>
+          <div class="step"><div class="step-num">04</div><h4>Top-100 Select</h4><p>np.argsort → top-k with deterministic tie-breaking</p></div>
+          <div class="step"><div class="step-num">05</div><h4>Evidence Reasoning</h4><p>Byte-offset seek index → load 100 records, cite actual skills</p></div>
+          <div class="step"><div class="step-num">06</div><h4>Validate &amp; Write</h4><p>validate_submission.py → submission.csv</p></div>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <!-- Dashboard -->
+      <div class="pipeline-phase phase-dash">
+        <div class="phase-header">
+          <span class="phase-badge phase-badge-d">DASHBOARD</span>
+          <span class="phase-title">Streamlit — interactive re-ranking workbench</span>
+          <span class="phase-meta">~50 ms re-rank · 6 tabs</span>
+        </div>
+        <div class="phase-steps">
+          <div class="step"><div class="step-num">UI</div><h4>Weight Sliders</h4><p>Drag any weight → single matrix multiply → instant re-rank</p></div>
+          <div class="step"><div class="step-num">UI</div><h4>Custom JD</h4><p>Paste any job description → embed on the fly → re-rank 100K</p></div>
+          <div class="step"><div class="step-num">UI</div><h4>MMR Diversity</h4><p>λ slider → penalize near-duplicate profiles in shortlist</p></div>
+          <div class="step"><div class="step-num">UI</div><h4>Stability Badge</h4><p>200 Monte Carlo trials → ±20% weight perturbation frequency</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SCORING -->
+<section id="scoring">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Methodology</div>
+      <h2 class="section-title">Five orthogonal<br><span class="grad-text">scoring signals</span></h2>
+      <p class="section-sub">No single signal can game the system. Keyword stuffers score high on technical fit but low on career quality and availability.</p>
+    </div>
+    <div class="scoring-grid reveal">
+      <div>
+        <div class="formula-box">
+          <div class="section-label" style="margin-bottom:1rem;">Composite Formula</div>
+          <pre>S = penalty × (
+  0.35 × technical_fit
++ 0.25 × career_quality
++ 0.20 × availability
++ 0.12 × seniority_fit
++ 0.08 × semantic_sim
+)</pre>
+          <p style="font-size:0.8rem;color:var(--muted);margin-top:1rem;">All sub-scores ∈ [0, 1]<br>Penalty ∈ [0.12, 1.0]</p>
+        </div>
+      </div>
+      <div class="signal-bars">
+        <div class="signal-bar">
+          <div class="signal-top"><span class="signal-name">Technical Fit</span><span class="signal-pct" style="color:var(--indigo)">35%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:35%;background:linear-gradient(90deg,var(--indigo),var(--violet))"></div></div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Embeddings/retrieval · vector DBs · Python · eval frameworks · LLM fine-tuning</p>
+        </div>
+        <div class="signal-bar">
+          <div class="signal-top"><span class="signal-name">Career Quality</span><span class="signal-pct" style="color:var(--green)">25%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:25%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Non-consulting history · ML title at real companies · tenure · title progression</p>
+        </div>
+        <div class="signal-bar">
+          <div class="signal-top"><span class="signal-name">Availability Signal</span><span class="signal-pct" style="color:var(--amber)">20%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(90deg,var(--amber),var(--pink))"></div></div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Open to work · recency · response rate · notice period · interview rate</p>
+        </div>
+        <div class="signal-bar">
+          <div class="signal-top"><span class="signal-name">Seniority Fit</span><span class="signal-pct" style="color:var(--pink)">12%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:12%;background:linear-gradient(90deg,var(--pink),var(--violet))"></div></div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">YoE 6–9 ideal · education tier bonus (IIT/IISc/NIT/BITS)</p>
+        </div>
+        <div class="signal-bar">
+          <div class="signal-top"><span class="signal-name">Semantic Similarity</span><span class="signal-pct" style="color:var(--cyan)">8%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:8%;background:linear-gradient(90deg,var(--cyan),var(--green))"></div></div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">MiniLM-L6-v2 cosine similarity — catches plain-language strong engineers</p>
+        </div>
+      </div>
+    </div>
+
+    <table class="signal-table reveal">
+      <thead><tr><th>Signal</th><th>Weight</th><th>What It Checks</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>🔧 Technical Fit</td>
+          <td style="color:var(--indigo)">0.35</td>
+          <td style="color:var(--muted);font-size:0.85rem;">JD must-haves scored by proficiency (expert=1.0, advanced=0.75, intermediate=0.4, beginner=0.1). Platform assessment scores override self-reported proficiency.</td>
+        </tr>
+        <tr>
+          <td>🏢 Career Quality</td>
+          <td style="color:var(--green)">0.25</td>
+          <td style="color:var(--muted);font-size:0.85rem;">Non-consulting role presence (+0.30), ML/AI title at ≥50-person company (+0.15), median tenure ≥36mo (+0.25), upward title progression (+0.20).</td>
+        </tr>
+        <tr>
+          <td>📡 Availability</td>
+          <td style="color:var(--amber)">0.20</td>
+          <td style="color:var(--muted);font-size:0.85rem;">Open-to-work flag, last active ≤30d/90d/180d, recruiter response rate, interview completion rate, notice period, applications submitted.</td>
+        </tr>
+        <tr>
+          <td>📏 Seniority Fit</td>
+          <td style="color:var(--pink)">0.12</td>
+          <td style="color:var(--muted);font-size:0.85rem;">YoE bands: 6–9yr → 1.0, 4–5/10–12yr → 0.7, 3/13–15yr → 0.4, else → 0.1. Tier-1 education +0.05.</td>
+        </tr>
+        <tr>
+          <td>🔎 Semantic Match</td>
+          <td style="color:var(--cyan)">0.08</td>
+          <td style="color:var(--muted);font-size:0.85rem;">Cosine similarity between 384-dim profile embedding and JD embedding. Safety net for strong candidates who describe skills in plain language.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADVERSARIAL -->
+<section id="adversarial">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Integrity Layer</div>
+      <h2 class="section-title">Built to defeat<br><span class="grad-text">adversarial profiles</span></h2>
+      <p class="section-sub">The dataset seeds ~80 fake profiles to catch naive rankers. SignalHire's disqualification layer hard-removes them before scoring begins.</p>
+    </div>
+    <div class="disq-grid reveal">
+      <div class="disq-card">
+        <span class="disq-icon">🍯</span>
+        <h3>Honeypot Detection</h3>
+        <p>Claimed years of experience exceeds what the career timeline allows. A candidate claiming 20yr experience with earliest role starting in 2018 is impossible.</p>
+        <div class="code-rule">yoe &gt; (CURRENT_YEAR - earliest_start)<br>+ HONEYPOT_YEAR_BUFFER (5)<br>→ HARD DISQUALIFIED</div>
+      </div>
+      <div class="disq-card">
+        <span class="disq-icon">👻</span>
+        <h3>Ghost Profile Detection</h3>
+        <p>Near-empty profiles with no verified contact. Profile completeness below 5% with neither verified email nor verified phone — they're not real candidates.</p>
+        <div class="code-rule">completeness &lt; 5%<br>AND not verified_email<br>AND not verified_phone<br>→ HARD DISQUALIFIED</div>
+      </div>
+      <div class="disq-card">
+        <span class="disq-icon">🔬</span>
+        <h3>Pure Research Filter</h3>
+        <p>All career roles titled "researcher" with zero deployment or production evidence in descriptions. Academic-only profiles don't fit a Senior AI Engineer role.</p>
+        <div class="code-rule">ALL roles: researcher title<br>AND zero production signals<br>(deployed/shipped/serving...)<br>→ HARD DISQUALIFIED</div>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem;" class="reveal">
+      <div class="section-label">Soft Penalties</div>
+      <h3 class="section-title" style="font-size:1.8rem;">Score multipliers for<br><span class="grad-text">borderline profiles</span></h3>
+    </div>
+    <div class="penalty-grid reveal">
+      <div class="penalty-card">
+        <div class="penalty-x" style="color:var(--red)">×0.15</div>
+        <h3 style="font-weight:700;font-family:'Space Grotesk',sans-serif;">All-Consulting Career</h3>
+        <p>Every role at TCS, Infosys, Wipro, Capgemini, Cognizant, Accenture, HCL etc. These profiles rarely have the deep technical work required.</p>
+        <span class="tag tag-pink">85% penalty</span>
+      </div>
+      <div class="penalty-card">
+        <div class="penalty-x" style="color:var(--amber)">×0.80</div>
+        <h3 style="font-weight:700;font-family:'Space Grotesk',sans-serif;">No Code in 18 Months</h3>
+        <p>Last active &gt;548 days ago with no current role. Skills may be significantly stale in a fast-moving AI/ML field.</p>
+        <span class="tag tag-amber">20% penalty</span>
+      </div>
+      <div class="penalty-card">
+        <div class="penalty-x" style="color:var(--cyan)">×0.85</div>
+        <h3 style="font-weight:700;font-family:'Space Grotesk',sans-serif;">CV / Speech / Robotics Only</h3>
+        <p>Has computer vision, speech recognition, or robotics domain skills but zero retrieval/search signals. Domain misalignment with this JD.</p>
+        <span class="tag tag-cyan">15% penalty</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Dashboard</div>
+      <h2 class="section-title">Six tabs.<br><span class="grad-text">One workbench.</span></h2>
+      <p class="section-sub">An interactive ranking environment — not just a results page. Every control re-ranks the full pool in real time.</p>
+    </div>
+    <div class="tabs-preview reveal">
+      <div class="tab-list">
+        <button class="tab-btn active" onclick="showTab('shortlist',this)">🏆 Shortlist</button>
+        <button class="tab-btn" onclick="showTab('compare',this)">⚖️ Compare</button>
+        <button class="tab-btn" onclick="showTab('insights',this)">📊 Insights</button>
+        <button class="tab-btn" onclick="showTab('integrity',this)">🛡️ Integrity</button>
+        <button class="tab-btn" onclick="showTab('export',this)">📤 Export</button>
+        <button class="tab-btn" onclick="showTab('methodology',this)">📖 Methodology</button>
+      </div>
+      <div id="tab-shortlist" class="tab-content active">
+        <div class="tab-card">
+          <h3>🏆 Shortlist — Paginated candidate cards</h3>
+          <ul class="tab-features-list">
+            <li><strong>Stability badge</strong> — frequency in top-100 across 200 Monte Carlo trials (±20% weight jitter). Stable ≥90% / Moderate ≥60% / Fragile &lt;60%</li>
+            <li><strong>Score bars</strong> — visual breakdown by signal (technical fit, career quality, availability, seniority, semantic match)</li>
+            <li><strong>Evidence chips</strong> — every matched JD requirement tagged with the exact skill name or career sentence that triggered it</li>
+            <li><strong>Penalty badges</strong> — flags consulting penalty, no-code penalty, or CV-only penalty where applied</li>
+            <li><strong>One-liner reasoning</strong> — evidence-cited summary for each candidate, never fabricated</li>
+            <li><strong>Load more</strong> — paginated at 10, expand as needed to see the full top-100</li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-compare" class="tab-content">
+        <div class="tab-card">
+          <h3>⚖️ Compare — Side-by-side radar chart</h3>
+          <ul class="tab-features-list">
+            <li>Select 2–4 candidates from the shortlist to compare head-to-head</li>
+            <li>Radar chart across all 5 score dimensions — visualize strengths and gaps at a glance</li>
+            <li>Per-candidate reasoning summaries shown side-by-side</li>
+            <li>Missing must-haves highlighted for each candidate</li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-insights" class="tab-content">
+        <div class="tab-card">
+          <h3>📊 Insights — Score landscape + fairness audit</h3>
+          <ul class="tab-features-list">
+            <li><strong>Score histogram</strong> — distribution of top-5000 composite scores with top-100 cutoff line</li>
+            <li><strong>Education tier</strong> — shortlist vs 100K pool distribution (Tier 1/2/3/unknown)</li>
+            <li><strong>Country distribution</strong> — shortlist vs pool for top-8 countries</li>
+            <li><strong>Years of experience</strong> — histogram overlay to detect seniority bias</li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-integrity" class="tab-content">
+        <div class="tab-card">
+          <h3>🛡️ Integrity — Adversarial audit log</h3>
+          <ul class="tab-features-list">
+            <li>Counts by category: total disqualified, honeypots, ghosts, pure research</li>
+            <li>Concrete examples — actual honeypot candidates with their claimed YoE vs career timeline evidence</li>
+            <li>Full disqualification log table (expandable) with reason strings</li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-export" class="tab-content">
+        <div class="tab-card">
+          <h3>📤 Export — Three export formats</h3>
+          <ul class="tab-features-list">
+            <li><strong>Submission CSV</strong> — challenge-format: candidate_id, rank, score (x/10), evidence reasoning (≤300 chars)</li>
+            <li><strong>Outreach pack</strong> — top-10 personalized first-touch draft messages citing each candidate's actual skills and notice period</li>
+            <li><strong>Ranking config JSON</strong> — current weights, JD label, and shortlist IDs as a reproducible snapshot</li>
+          </ul>
+        </div>
+      </div>
+      <div id="tab-methodology" class="tab-content">
+        <div class="tab-card">
+          <h3>📖 Methodology — Live formula display</h3>
+          <ul class="tab-features-list">
+            <li>Composite scoring formula rendered dynamically from current weight values</li>
+            <li>Signal explanations with what each sub-score measures</li>
+            <li>Integrity rules documentation with exact thresholds</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Code Architecture</div>
+      <h2 class="section-title">Clean dependency<br><span class="grad-text">layer graph</span></h2>
+      <p class="section-sub">Zero circular dependencies. Every module has a single responsibility. Leaf modules have no project imports.</p>
+    </div>
+    <div class="dep-graph reveal">
+<span class="layer-label">Layer 0 — Leaf modules (no project imports)</span>
+<span class="leaf">  textmatch.py</span>  ── re, functools  <span style="color:var(--muted);font-size:0.72rem"># word-boundary keyword matching, lru_cache</span>
+<span class="leaf">  config.py   </span>  ── os, re, pathlib <span style="color:var(--muted);font-size:0.72rem"># all constants, weights, keyword lists</span>
+
+<span class="layer-label">Layer 1</span>
+<span class="mid">  disqualify.py</span> <span class="arrow">──►</span> config, textmatch  <span style="color:var(--muted);font-size:0.72rem"># honeypot / ghost / pure-research detection</span>
+
+<span class="layer-label">Layer 2</span>
+<span class="mid">  signals.py  </span> <span class="arrow">──►</span> config, disqualify, textmatch  <span style="color:var(--muted);font-size:0.72rem"># 4 sub-score functions</span>
+
+<span class="layer-label">Layer 3</span>
+<span class="mid">  evidence.py </span> <span class="arrow">──►</span> config, signals, textmatch  <span style="color:var(--muted);font-size:0.72rem"># JD requirement tracing + reasoning</span>
+<span class="mid">  engine.py   </span> <span class="arrow">──►</span> config                     <span style="color:var(--muted);font-size:0.72rem"># vectorized scoring, MMR, stability</span>
+
+<span class="layer-label">Layer 4</span>
+<span class="top">  precompute.py</span><span class="arrow">──►</span> config, disqualify, signals  + sentence_transformers
+
+<span class="layer-label">Layer 5</span>
+<span class="top">  rank.py     </span> <span class="arrow">──►</span> config, engine, evidence
+
+<span class="layer-label">Layer 6</span>
+<span class="top">  app.py      </span> <span class="arrow">──►</span> config, engine, evidence, rank  + streamlit, plotly
+    </div>
+
+    <div class="output-schema reveal">
+      <div class="schema-header">output/submission.csv — validated output format</div>
+      <div class="schema-body">
+        <pre><span class="kw-key">candidate_id</span>,<span class="kw-key">rank</span>,<span class="kw-key">score</span>,<span class="kw-key">reasoning</span>
+<span class="kw-string">CAND_0081846</span>,<span class="kw-num">1</span>,<span class="kw-num">8.70</span>,<span class="kw-string">"6.7yr Lead AI Engineer at Razorpay; strong match on embeddings, vector search,
+python, information retrieval; production evidence (serving, ndcg);
+actively looking, 73% response rate, 30d notice."</span>
+<span class="kw-string">CAND_0055905</span>,<span class="kw-num">2</span>,<span class="kw-num">8.69</span>,<span class="kw-string">"8.1yr Senior ML Engineer at Flipkart; strong match on embeddings, vector search,
+python, information retrieval; production evidence (deployed, serving);
+actively looking, 87% response rate."</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUICK START -->
+<section id="quickstart">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Up and running<br><span class="grad-text">in four commands</span></h2>
+    </div>
+    <div class="qs-grid reveal">
+      <div class="qs-step">
+        <span class="qs-num">01</span>
+        <h3>Install</h3>
+        <div class="code-block">
+<span class="comment"># Create venv & install deps</span>
+<span class="cmd">python -m venv venv</span>
+<span class="cmd">source venv/bin/activate</span>
+<span class="cmd">pip install -r requirements.txt</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="qs-num">02</span>
+        <h3>Precompute (once)</h3>
+        <div class="code-block">
+<span class="comment"># CPU default; GPU ~10x faster</span>
+<span class="cmd">python precompute.py</span>
+<span class="comment"># or with GPU:</span>
+<span class="cmd">EMBEDDING_DEVICE=cuda python precompute.py</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="qs-num">03</span>
+        <h3>Rank</h3>
+        <div class="code-block">
+<span class="comment"># Generates output/submission.csv</span>
+<span class="cmd">python rank.py</span>
+<span class="comment"># Output: validated, 100 rows, ~3s</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="qs-num">04</span>
+        <h3>Dashboard</h3>
+        <div class="code-block">
+<span class="comment"># Interactive workbench</span>
+<span class="cmd">streamlit run app.py</span>
+<span class="comment"># Opens: http://localhost:8501</span>
+<span class="comment"># Or: huggingface.co/spaces/DevanshSrajput/SignalHire</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <div class="qs-step" style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;">
+        <h3 style="margin-bottom:1rem;">🐳 Docker (submission-ready)</h3>
+        <div class="code-block">
+<span class="comment"># Artifacts baked in — only candidates.jsonl needs mounting</span>
+<span class="cmd">docker build -t signalhire .</span>
+<span class="cmd">docker run --rm \</span>
+<span class="cmd">  -v $(pwd)/data:/app/data \</span>
+<span class="cmd">  -v $(pwd)/output:/app/output \</span>
+<span class="cmd">  signalhire</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PERFORMANCE -->
+<section id="performance">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Benchmarks</div>
+      <h2 class="section-title">Measured on<br><span class="grad-text">RTX 3050 + 12-core CPU</span></h2>
+    </div>
+    <div class="perf-grid reveal">
+      <div class="perf-card">
+        <div class="perf-val" style="color:var(--indigo)">4.2m</div>
+        <div class="perf-sub">Precompute (GPU)</div>
+        <div class="perf-detail">100K → 99,965 candidates · ~400 cand/s · all-MiniLM-L6-v2</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val" style="color:var(--green)">~3s</div>
+        <div class="perf-sub">Ranking + Validation</div>
+        <div class="perf-detail">CPU-only · full composite scores · validate_submission passes</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val" style="color:var(--amber)">50ms</div>
+        <div class="perf-sub">Dashboard Re-rank</div>
+        <div class="perf-detail">Single float32 matrix multiply · 2M candidates/s throughput</div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-val" style="color:var(--pink)">162MB</div>
+        <div class="perf-sub">Artifact Footprint</div>
+        <div class="perf-detail">147MB embeddings · 7MB subscores · well within 16GB RAM limit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">People</div>
+      <h2 class="section-title">Built by<br><span class="grad-text">this team</span></h2>
+      <p class="section-sub">Contributors who made SignalHire happen. Every commit, review, and idea counted.</p>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <img class="team-avatar" src="https://avatars.githubusercontent.com/u/157361908?v=4" alt="Devansh Singh Rajput">
+        <div class="team-name">Devansh Singh Rajput</div>
+        <div class="team-role">Lead Author · 52 commits</div>
+        <div class="team-bio">Research Intern at IIT (ISM) Dhanbad · AI/ML Developer · Open Source Contributor · Building efficient AI systems and real-world ML applications</div>
+        <div class="team-links">
+          <a href="https://devanshsingh.dev" target="_blank" class="team-link">🌐 Portfolio</a>
+          <a href="https://github.com/DevanshSrajput" target="_blank" class="team-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="https://avatars.githubusercontent.com/u/93360691?v=4" alt="Aditya">
+        <div class="team-name">Aditya</div>
+        <div class="team-role">Contributor</div>
+        <div class="team-bio">i-used-arch-for-1098-days-btw!</div>
+        <div class="team-links">
+          <a href="https://github.com/aditya-ig10" target="_blank" class="team-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+        <div class="contrib-badge">1 contribution</div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="https://avatars.githubusercontent.com/u/235879465?v=4" alt="Rachit Mittal">
+        <div class="team-name">Rachit Mittal</div>
+        <div class="team-role">Contributor</div>
+        <div class="team-bio">GitHub contributor to SignalHire</div>
+        <div class="team-links">
+          <a href="https://github.com/RachitMittal-20" target="_blank" class="team-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+        <div class="contrib-badge">1 contribution</div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="https://avatars.githubusercontent.com/u/226843648?v=4" alt="Vaishnavi Singh">
+        <div class="team-name">Vaishnavi Singh</div>
+        <div class="team-role">Contributor</div>
+        <div class="team-bio">Just a dehydrated penguin 🐧</div>
+        <div class="team-links">
+          <a href="https://github.com/VaishnaviSingh-Analyst" target="_blank" class="team-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+        <div class="contrib-badge">1 contribution</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LINKS -->
+<section id="links">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Ecosystem</div>
+      <h2 class="section-title">Everything<br><span class="grad-text">in one place</span></h2>
+    </div>
+    <div class="links-grid reveal">
+      <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank" class="link-card">
+        <span class="link-icon">🤗</span>
+        <h3>Live Demo</h3>
+        <p>Interactive dashboard on HuggingFace Spaces — try all features on 50 sample candidates</p>
+        <span class="link-arrow">→ huggingface.co</span>
+      </a>
+      <a href="https://github.com/DevanshSrajput/SignalHire" target="_blank" class="link-card">
+        <span class="link-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </span>
+        <h3>GitHub Repo</h3>
+        <p>Full source code — 9 Python modules, Dockerfile, tests, and complete documentation</p>
+        <span class="link-arrow">→ DevanshSrajput/SignalHire</span>
+      </a>
+      <a href="https://devanshsingh.dev" target="_blank" class="link-card">
+        <span class="link-icon">🌐</span>
+        <h3>Portfolio</h3>
+        <p>More projects and work from Devansh Singh Rajput — AI/ML engineer and open source contributor</p>
+        <span class="link-arrow">→ devanshsingh.dev</span>
+      </a>
+      <a href="docs.html" class="link-card">
+        <span class="link-icon">📚</span>
+        <h3>Full Documentation</h3>
+        <p>Module reference, data schemas, function signatures, FAQ, and initial planning documents</p>
+        <span class="link-arrow">→ docs.html</span>
+      </a>
+      <a href="https://github.com/DevanshSrajput" target="_blank" class="link-card">
+        <span class="link-icon">👤</span>
+        <h3>GitHub Profile</h3>
+        <p>Research Intern at IIT (ISM) Dhanbad — building efficient AI systems and real-world ML applications</p>
+        <span class="link-arrow">→ @DevanshSrajput</span>
+      </a>
+      <a href="https://youtu.be/zaNRSn0xyzU" target="_blank" class="link-card">
+        <span class="link-icon">🎬</span>
+        <h3>Walkthrough Video</h3>
+        <p>Full demo walkthrough — pipeline, dashboard features, scoring methodology explained</p>
+        <span class="link-arrow">→ YouTube</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🎯 SignalHire</div>
+    <div class="footer-sub">AI-Powered Candidate Ranking · India Runs Hackathon · Redrob AI Challenge 2025</div>
+    <div class="footer-links">
+      <a href="https://devanshsingh.dev" target="_blank">🌐 Portfolio</a>
+      <a href="https://github.com/DevanshSrajput/SignalHire" target="_blank">GitHub Repo</a>
+      <a href="https://github.com/DevanshSrajput" target="_blank">GitHub Profile</a>
+      <a href="https://huggingface.co/spaces/DevanshSrajput/SignalHire" target="_blank">🤗 Live Demo</a>
+      <a href="docs.html">Full Docs</a>
+      <a href="https://youtu.be/zaNRSn0xyzU" target="_blank">Walkthrough</a>
+    </div>
+    <div class="footer-copy">Built by Devansh Singh Rajput, Aditya, Rachit Mittal &amp; Vaishnavi Singh · MIT License</div>
+  </div>
+</footer>
+
+<script>
+// Tabs
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

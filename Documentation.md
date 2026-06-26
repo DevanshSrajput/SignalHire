@@ -986,17 +986,19 @@ The Space uses Docker SDK with precomputed artifacts for the sample data (~82 KB
 
 ### Documentation Site
 
-The documentation site is built with [docmd](https://docmd.io) — a zero-config documentation engine that auto-discovers Markdown files in the repository.
+A hand-crafted static site lives in the `site/` directory:
+
+| File | Description |
+|---|---|
+| `site/index.html` | Landing page — hero, pipeline, scoring, adversarial detection, dashboard tabs, team, links |
+| `site/docs.html` | Full technical docs — module reference, function signatures, data schemas, FAQ |
+
+Open locally by double-clicking `site/index.html`, or serve with:
 
 ```bash
-# Build static site
-docmd build
-
-# Development server with hot reload
-docmd dev
+python -m http.server 8080 --directory site
+# Visit: http://localhost:8080
 ```
-
-**Deployment:** GitHub Pages via `.github/workflows/static.yml` deploys the `./site` directory on push to `main`.
 
 ---
 
