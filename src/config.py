@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 _script_dir = Path(__file__).resolve().parent
-if _script_dir.name == "signalhire":
+if _script_dir.name in ("signalhire", "src"):
     ROOT = _script_dir.parent
 else:
     ROOT = _script_dir

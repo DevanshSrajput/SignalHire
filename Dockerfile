@@ -14,5 +14,5 @@ RUN mkdir -p /app/data /app/output
 EXPOSE 8501
 
 # Sandbox default: produce the ranked submission.
-# For the dashboard: docker run -p 8501:8501 signalhire streamlit run app.py
-CMD ["python", "rank.py"]
+# For the dashboard: docker run -p 8501:8501 signalhire streamlit run src/app.py
+CMD ["python", "src/rank.py"]

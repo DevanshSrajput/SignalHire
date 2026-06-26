@@ -5,6 +5,8 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
