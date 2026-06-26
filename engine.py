@@ -57,7 +57,7 @@ def top_k_indices(scores: np.ndarray, k: int) -> np.ndarray:
     """Indices of the top-k scores, ordered best-first (deterministic ties)."""
     k = min(k, len(scores))
     idx = np.argpartition(-scores, k - 1)[:k]
-    return idx[np.lexsort((idx, -np.round(scores[idx], 6)))]
+    return idx[np.lexsort((idx, -np.round(scores[idx], 3)))]
 
 
 def mmr_rerank(

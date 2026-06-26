@@ -98,7 +98,6 @@ def main():
     subscores_dict = {}
 
     blob_batch = []
-    id_batch = []
 
     t0 = time.time()
 
@@ -118,7 +117,6 @@ def main():
             honeypot, reason = is_honeypot(candidate)
             if honeypot:
                 cid = candidate.get("candidate_id", "unknown")
-                # Reasons are prefixed "HONEYPOT:", "GHOST:" or "PURE_RESEARCH:".
                 disq_type = reason.split(":", 1)[0]
                 if disq_type not in disq_counts:
                     disq_type = "GHOST"
@@ -133,13 +131,11 @@ def main():
 
             blob = build_profile_blob(candidate)
             blob_batch.append(blob)
-            id_batch.append(cid)
 
             if len(blob_batch) >= EMBEDDING_BATCH_SIZE:
                 emb = model.encode(blob_batch, normalize_embeddings=True).astype(np.float32)
                 all_embeddings.append(emb)
                 blob_batch = []
-                id_batch = []
 
             if total % CHUNK_SIZE == 0:
                 elapsed = time.time() - t0

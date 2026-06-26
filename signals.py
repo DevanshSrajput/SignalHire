@@ -18,7 +18,7 @@ from config import (
     TIER_2_INSTITUTIONS,
 )
 from disqualify import parse_year, sort_career_chronologically
-from textmatch import matched_keywords, matches_keyword
+from textmatch import matched_keywords, matches_any, matches_keyword
 
 
 def _build_skill_dict(candidate: dict) -> Dict[str, float]:
@@ -89,14 +89,14 @@ def compute_technical_fit(candidate: dict) -> float:
     skill_dict = _build_skill_dict(candidate)
 
     career_descriptions = " ".join(
-        (r.get("description", "") or "") for r in candidate.get("career_history", [])
+        (r.get("description") or "") for r in candidate.get("career_history", [])
     )
     blob = (
-        (candidate.get("profile", {}).get("headline", "") or "")
+        (candidate.get("profile", {}).get("headline") or "")
         + " "
-        + (candidate.get("profile", {}).get("summary", "") or "")
+        + (candidate.get("profile", {}).get("summary") or "")
         + " "
-        + (candidate.get("profile", {}).get("current_title", "") or "")
+        + (candidate.get("profile", {}).get("current_title") or "")
         + " "
         + career_descriptions
     )
@@ -320,7 +320,6 @@ def _check_education_tier(candidate: dict) -> int:
         t = e.get("tier")
         if t is None:
             continue
-        # Dataset uses strings like "tier_1".."tier_4" / "unknown".
         m = re.search(r"\d+", str(t))
         if m:
             raw_tiers.append(int(m.group(0)))
@@ -329,15 +328,13 @@ def _check_education_tier(candidate: dict) -> int:
         if best <= 2:
             return int(best)
     for entry in edu_entries:
-        institution = (entry.get("institution", "") or "").lower().strip()
-        for kw in TIER_1_INSTITUTIONS:
-            if kw in institution:
-                return 1
+        institution = (entry.get("institution", "") or "").lower()
+        if matches_any(institution, TIER_1_INSTITUTIONS):
+            return 1
     for entry in edu_entries:
-        institution = (entry.get("institution", "") or "").lower().strip()
-        for kw in TIER_2_INSTITUTIONS:
-            if kw in institution:
-                return 2
+        institution = (entry.get("institution", "") or "").lower()
+        if matches_any(institution, TIER_2_INSTITUTIONS):
+            return 2
     return 0
 
 

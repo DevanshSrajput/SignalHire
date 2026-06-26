@@ -153,13 +153,16 @@ def cached_candidates(ids: tuple) -> dict:
     return load_candidates_by_ids(ids, get_offset_index())
 
 
-@st.cache_data(show_spinner="Building pool demographics (one-time pass) ...")
 def pool_demographics() -> pd.DataFrame:
     """Light per-candidate demographics for the fairness audit. Extracted
-    once from the JSONL and cached on disk so later sessions load instantly."""
+    once from the JSONL and cached on disk so later sessions load instantly.
+    Rebuilds the cache when candidates.jsonl is newer than the cached file."""
     cache_path = ARTIFACTS_DIR / "demographics.csv"
-    if cache_path.exists():
-        return pd.read_csv(cache_path)
+    if cache_path.exists() and CANDIDATES_PATH.exists():
+        cache_mtime = cache_path.stat().st_mtime
+        jsonl_mtime = CANDIDATES_PATH.stat().st_mtime
+        if cache_mtime >= jsonl_mtime:
+            return pd.read_csv(cache_path)
     rows = []
     with open(CANDIDATES_PATH, "r", encoding="utf-8") as f:
         for line in f:
@@ -666,12 +669,9 @@ def build_submission_csv(top_idx, scores, ids, candidates_by_id) -> str:
     buf = io.StringIO()
     writer = csv.writer(buf)
     writer.writerow(["candidate_id", "rank", "score", "reasoning"])
-    # Sort on the emitted (rescaled, rounded) score so the CSV is provably
-    # non-increasing at output precision, with candidate_id ascending as the
-    # tie-break the validator requires for equal scores.
     rows = sorted(
         ((str(ids[i]), float(scores[i])) for i in top_idx),
-        key=lambda r: (-float(format_score(r[1])), r[0]),
+        key=lambda r: (-round(scale_score(r[1]), 3), r[0]),
     )
     for rank_pos, (cid, raw) in enumerate(rows):
         cand = candidates_by_id.get(cid)
@@ -702,7 +702,7 @@ def build_outreach_pack(top_idx, scores, ids, candidates_by_id, n: int = 10) -> 
             "",
             "**Draft outreach:**",
             "",
-            f"> Hi {name.split()[0] if name else 'there'}, your experience with "
+            f"> Hi {(name.split() or ['there'])[0]}, your experience with "
             f"{hook_str} at {profile.get('current_company', 'your current company')} "
             f"stood out for a Senior AI Engineer role we're hiring for — the team "
             f"builds production retrieval and ranking systems. Given your "

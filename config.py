@@ -131,8 +131,8 @@ TIER_1_INSTITUTIONS = [
 ]
 
 TIER_2_INSTITUTIONS = [
-    "dtu", "delhi technological", "nsit", "iiitm", "iiit",
-    "nit", "vit", "vellore institute", "srm",
+    "dtu", "delhi technological", "nsit", "iiitm",
+    "vit", "vellore institute", "srm",
     "college of engineering", "psg", "thapar",
     "birla institute", "bitsat",
 ]
