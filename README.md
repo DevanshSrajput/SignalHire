@@ -7,16 +7,21 @@
 [![GPU Optional](https://img.shields.io/badge/GPU-optional%20(EMBEDDING__DEVICE%3Dcuda)-green?logo=nvidia)]()
 [![sentence-transformers](https://img.shields.io/badge/sentence--transformers-all--MiniLM--L6--v2-orange)]()
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B?logo=streamlit)]()
-[![HF Space](https://img.shields.io/badge/🤗%20Live%20Demo-DevanshSrajput%2FSignalHire-yellow)](https://huggingface.co/spaces/DevanshSrajput/SignalHire)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)]()
 
-📚 **[Full Documentation](https://devanshsrajput.github.io/SignalHire/)**
+---
+
+## 🤗 Live Demo
+
+**[→ Try it on HuggingFace Spaces](https://huggingface.co/spaces/DevanshSrajput/SignalHire)**
+
+Interactive dashboard running on the 50-candidate sample dataset. Full weight sliders, radar compare, fairness audit, and export — all tabs live.
+
+---
 
 ### 🎬 Walkthrough Video
 
 [<img src="assets/walkthrough-thumbnail.jpg" width="320" alt="SignalHire walkthrough video thumbnail">](https://youtu.be/zaNRSn0xyzU)
-
-Click the thumbnail above to watch the walkthrough on YouTube.
 
 ---
 
@@ -40,7 +45,7 @@ Click the thumbnail above to watch the walkthrough on YouTube.
 - [Pipeline](#pipeline)
 - [Quick Start](#quick-start)
 - [How to Run](#how-to-run)
-  - [Precompute (GPU)](#1-precompute-gpu)
+  - [Precompute](#1-precompute)
   - [Rank (CPU)](#2-rank-cpu)
   - [Dashboard](#3-dashboard)
   - [Docker](#docker)
@@ -51,7 +56,6 @@ Click the thumbnail above to watch the walkthrough on YouTube.
 - [Output Format](#output-format)
 - [Sandbox Constraints](#sandbox-constraints)
 - [Performance](#performance)
-- [Contributing](#contributing)
 
 ---
 
@@ -62,7 +66,7 @@ Click the thumbnail above to watch the walkthrough on YouTube.
                             │
                             ▼
           ┌──────────────────────────────────────┐
-          │  PHASE A: Precompute (GPU, ~4 min)   │
+          │  PHASE A: Precompute (~4 min GPU)    │
           │                                      │
           │  Stream JSONL ─► Disqualify fakes    │
           │         └──► Embed (MiniLM, 384-dim) │
@@ -72,11 +76,11 @@ Click the thumbnail above to watch the walkthrough on YouTube.
                          │  embeddings.npy + subscores.pkl (~155 MB)
                          ▼
           ┌──────────────────────────────────────┐
-          │  PHASE B: Ranking (CPU, <10 s)       │
+          │  PHASE B: Ranking (CPU, ~3 s)        │
           │                                      │
           │  Load artifacts ─► Cosine similarity │
           │         └──► Weighted composite      │
-          │         └──► argsort → top 100        │
+          │         └──► argsort → top 100       │
           │         └──► Evidence-based reasoning│
           │         └──► Validate & write CSV    │
           └──────────────┬───────────────────────┘
@@ -91,11 +95,10 @@ Click the thumbnail above to watch the walkthrough on YouTube.
 ## Quick Start
 
 ```bash
-# Setup
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 
-# Precompute (CPU by default; add EMBEDDING_DEVICE=cuda for GPU)
+# Precompute (CPU default; set EMBEDDING_DEVICE=cuda for GPU ~10× faster)
 python precompute.py
 
 # Rank & generate submission
@@ -110,7 +113,7 @@ streamlit run app.py
 | Requirement | Notes |
 |---|---|
 | Python ≥ 3.10 | |
-| NVIDIA GPU + CUDA | Optional — speeds precompute ~10×. CPU is the default; set `EMBEDDING_DEVICE=cuda python precompute.py` to use GPU. |
+| NVIDIA GPU + CUDA | Optional — speeds precompute ~10×. CPU is the default; run `EMBEDDING_DEVICE=cuda python precompute.py` to use GPU. |
 | Disk | ~500 MB for data + ~160 MB for generated artifacts |
 | RAM | 16 GB recommended |
 
@@ -118,13 +121,17 @@ streamlit run app.py
 
 ## How to Run
 
-### 1. Precompute (GPU)
+### 1. Precompute
 
 Processes all 100K candidates: disqualifies bad actors, generates 384-dim
 embeddings via `all-MiniLM-L6-v2`, computes 4 sub-scores per candidate.
 
 ```bash
+# CPU (default)
 python precompute.py
+
+# GPU (~10× faster)
+EMBEDDING_DEVICE=cuda python precompute.py
 ```
 
 **Artifacts produced** (saved to `artifacts/`):
@@ -163,11 +170,13 @@ precomputed artifacts.
 
 ### Docker
 
+Artifacts are baked into the image — only `candidates.jsonl` needs to be mounted.
+
 ```bash
-# Build — bakes precomputed artifacts into the image
+# Build
 docker build -t signalhire .
 
-# Rank (mount candidates.jsonl in, get submission.csv out)
+# Rank (mount data in, get submission.csv out)
 docker run --rm \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/output:/app/output \
@@ -178,8 +187,6 @@ docker run --rm -p 8501:8501 \
   -v $(pwd)/data:/app/data \
   signalhire streamlit run app.py --server.port=8501 --server.address=0.0.0.0
 ```
-
-> Precomputed artifacts are baked into the image — no GPU needed at runtime. The image pre-downloads the embedding model at build time.
 
 ---
 
@@ -195,8 +202,7 @@ Each candidate card shows:
 - **Horizontal score bars** — technical fit, career quality, availability,
   seniority fit, semantic match
 - **Evidence chips** — every JD requirement that matched, with the exact
-  skill or text snippet that triggered it. Missing must-haves are flagged in
-  red.
+  skill or text snippet that triggered it. Missing must-haves are flagged in red.
 - **One-liner reasoning** — cites actual skills and production signals, not
   templated claims
 
@@ -261,13 +267,6 @@ All sub-scores normalized to [0, 1].
 | **Seniority Fit** | 0.12 | YoE 6–9 → 1.0, 4–5/10–12 → 0.7, 3/13–15 → 0.4, else → 0.1. Tier-1 education (+0.05), Tier-2 (+0.02). |
 | **Semantic Similarity** | 0.08 | Cosine similarity between profile embedding and JD embedding — catches strong engineers whose plain language misses keyword checks. |
 
-### Word-Boundary Keyword Matching
-
-All keyword scans use `textmatch.py` — stems of 4+ characters may extend
-(e.g. `"eval"` matches `"evaluation"`) while short keywords (`"rag"`, `"mrr"`,
-`"map"`, `"e5"`) must match as whole words. This eliminates false positives
-like `"rag"` inside `"storage"`.
-
 ### Evidence-Based Reasoning
 
 `evidence.py` traces every JD requirement hit back to either a declared skill
@@ -314,9 +313,9 @@ SignalHire/
 ├── 📁 data/
 │   ├── candidates.jsonl      # 100K candidate profiles (~487 MB)
 │   ├── job_description.docx  # Target job description
-│   ├── validate_submission.py  # Challenge validator
-│   ├── candidate_schema.json   # Data schema
-│   └── sample_*              # Samples
+│   ├── validate_submission.py
+│   ├── candidate_schema.json
+│   └── sample_candidates.json
 │
 ├── 📁 artifacts/             # Generated by precompute.py
 │   ├── embeddings.npy        # (99965, 384) float32
@@ -329,12 +328,11 @@ SignalHire/
 ├── 📁 output/
 │   └── submission.csv        # Final validated output
 │
-├── 📄 Documentation.md         # Complete project documentation
-├── 📁 Initial-Documentation/   # Original planning docs (PRD, TRD, etc.)
-├── 📄 submission_metadata.yaml # Hackathon submission metadata (team, sandbox link, approach)
+├── 📄 submission_metadata.yaml
+├── 📄 Documentation.md
+├── 📁 Initial-Documentation/
 ├── requirements.txt
-├── Dockerfile
-└── GOOD_FIRST_ISSUES.md        # Starter tasks for contributors
+└── Dockerfile
 ```
 
 ---
@@ -350,12 +348,12 @@ CAND_0055905,2,8.69,"8.1yr Senior Machine Learning Engineer at Flipkart; strong 
 ```
 
 **Validation rules:**
+
 | Rule | Enforced |
 |---|---|
 | Exactly 100 rows (ranks 1–100) | ✅ |
 | Scores non-increasing by rank | ✅ |
 | Tie-breaking by candidate_id ascending | ✅ |
-| candidate_id format `CAND_XXXXXXX` | ✅ |
 | Reasoning ≤ 300 chars, no newlines | ✅ |
 
 ---
@@ -381,18 +379,6 @@ Measured on **NVIDIA RTX 3050 (6 GB) + 12-core CPU**:
 | Offset index build | CPU | **~1.5 s** | ~67K lines/s |
 | Ranking + validation | CPU | **~3.1 s** | ~32K cand/s |
 | **Dashboard re-rank** | CPU | **~50 ms** | 2M cand/s |
-
----
-
-## Contributing
-
-Check out [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md) — there are 10
-well-scoped tasks from trivial (`id_batch` cleanup) to medium (pytest
-regression suite, spec-compliance fixes). Each one has:
-
-- A clear definition of done
-- File paths and line references
-- Estimated difficulty
 
 ---
 

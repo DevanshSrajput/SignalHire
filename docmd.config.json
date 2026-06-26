@@ -1,8 +1,0 @@
-{
-  "title": "SignalHire",
-  "src": "./",
-  "out": "./site",
-  "ignores": ["venv", ".venv", "__pycache__"],
-  "srcExclude": ["venv/**", "venv"],
-  "exclude": ["venv", "venv/**"]
-}
