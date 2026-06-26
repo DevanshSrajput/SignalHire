@@ -66,7 +66,7 @@ Given a 487 MB JSONL file containing 100K candidate profiles — including keywo
 
 A two-phase offline hybrid scoring pipeline:
 
-1. **Phase A (Precompute)** — GPU-accelerated embedding generation + multi-signal sub-score computation
+1. **Phase A (Precompute)** — Embedding generation + multi-signal sub-score computation (GPU optional via `EMBEDDING_DEVICE=cuda`)
 2. **Phase B (Ranking)** — CPU-only composite scoring via vectorized matrix operations, evidence-based reasoning, and validated CSV output
 
 The system uses **5 orthogonal scoring signals** (technical fit, career quality, availability, seniority fit, semantic similarity) combined with an **adversarial detection layer** that catches honeypots, ghosts, and pure-research profiles before they can pollute the shortlist.
@@ -118,7 +118,7 @@ The system uses **5 orthogonal scoring signals** (technical fit, career quality,
           │                                      │
           │  Load artifacts ─► Cosine similarity │
           │         └──► Weighted composite      │
-          │         └──► argpartition → top 100  │
+          │         └──► argsort → top 100        │
           │         └──► Evidence-based reasoning│
           │         └──► Validate & write CSV    │
           └──────────────┬───────────────────────┘
@@ -190,7 +190,7 @@ candidates.jsonl ──►  precompute.py  ──►  artifacts/
 | Requirement | Notes |
 |---|---|
 | **Python** ≥ 3.10 | Required |
-| **NVIDIA GPU + CUDA** | Optional — speeds precompute ~10×. Set `EMBEDDING_DEVICE = "cpu"` in `config.py` without one |
+| **NVIDIA GPU + CUDA** | Optional — speeds precompute ~10×. CPU is the default; run `EMBEDDING_DEVICE=cuda python precompute.py` to use GPU |
 | **Disk** | ~500 MB for data + ~160 MB for generated artifacts |
 | **RAM** | 16 GB recommended |
 
@@ -198,7 +198,7 @@ candidates.jsonl ──►  precompute.py  ──►  artifacts/
 
 ```bash
 # Clone and setup
-git clone https://github.com/your-org/SignalHire.git
+git clone https://github.com/DevanshSrajput/SignalHire.git
 cd SignalHire
 
 # Create virtual environment
@@ -224,7 +224,7 @@ pip install -r requirements.txt
 ### Running the Pipeline
 
 ```bash
-# Step 1: Precompute embeddings + sub-scores (GPU recommended, ~4 min)
+# Step 1: Precompute embeddings + sub-scores (CPU by default; EMBEDDING_DEVICE=cuda for GPU)
 python precompute.py
 
 # Step 2: Generate ranked submission (CPU, ~5 s)
@@ -237,23 +237,22 @@ streamlit run app.py
 ### Docker
 
 ```bash
-# Build (pre-downloads embedding model)
+# Build — bakes precomputed artifacts into the image
 docker build -t signalhire .
 
-# Rank
+# Rank (mount candidates.jsonl in, get submission.csv out)
 docker run --rm \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/output:/app/output \
-  signalhire python rank.py
+  signalhire
 
 # Dashboard
 docker run --rm -p 8501:8501 \
   -v $(pwd)/data:/app/data \
-  -v $(pwd)/artifacts:/app/artifacts \
-  signalhire streamlit run app.py
+  signalhire streamlit run app.py --server.port=8501 --server.address=0.0.0.0
 ```
 
-> Add `--gpus all` if NVIDIA Container Toolkit is installed.
+> Precomputed artifacts are baked into the image — no GPU needed at runtime. The image pre-downloads the embedding model at build time. Add `--gpus all` only for GPU-accelerated precompute runs.
 
 ---
 
@@ -952,23 +951,38 @@ streamlit run app.py
 
 ```bash
 # Full pipeline
-python precompute.py     # Phase A: ~4 min (GPU) / ~40 min (CPU)
-python rank.py           # Phase B: ~5 seconds
-streamlit run app.py     # Dashboard: http://localhost:8501
+EMBEDDING_DEVICE=cuda python precompute.py  # Phase A: ~4 min (GPU) or just `python precompute.py` for CPU (~30 min)
+python rank.py                              # Phase B: ~3 s
+streamlit run app.py                        # Dashboard: http://localhost:8501
 ```
 
 ### Docker Container
 
-```dockerfile
-FROM python:3.10-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-# Pre-download model (no network needed at runtime)
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
-COPY . .
-CMD ["python", "rank.py"]
+Artifacts are baked into the image at build time — `candidates.jsonl` is the only file that must be mounted.
+
+```bash
+# Build (includes precomputed artifacts, pre-downloads embedding model)
+docker build -t signalhire .
+
+# Rank
+docker run --rm \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/output:/app/output \
+  signalhire
+
+# Dashboard
+docker run --rm -p 8501:8501 \
+  -v $(pwd)/data:/app/data \
+  signalhire streamlit run app.py --server.port=8501 --server.address=0.0.0.0
 ```
+
+### HuggingFace Space (Live Demo)
+
+A live demo runs on HuggingFace Spaces using the 50-candidate sample dataset:
+
+**[https://huggingface.co/spaces/DevanshSrajput/SignalHire](https://huggingface.co/spaces/DevanshSrajput/SignalHire)**
+
+The Space uses Docker SDK with precomputed artifacts for the sample data (~82 KB). Weight sliders and all dashboard tabs work identically to the full 100K version.
 
 ### Documentation Site
 

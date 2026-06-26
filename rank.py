@@ -106,7 +106,8 @@ def main():
     base_scores = subscore_matrix @ weight_vector
     scores = penalty_multipliers * (base_scores + WEIGHTS["semantic_similarity"] * semantic_sim)
 
-    top_indices = np.argpartition(-scores, TOP_K)[:TOP_K]
+    k = min(TOP_K, len(scores))
+    top_indices = np.argsort(-scores)[:k]
     top_k_pairs = [(float(scores[i]), str(candidate_ids[i])) for i in top_indices]
 
     # Sort on the emitted (rescaled, rounded) score so the CSV is provably
@@ -138,18 +139,21 @@ def main():
     elapsed = time.time() - t0
     print(f"Ranking complete in {elapsed:.1f}s")
 
-    print("Validating submission ...")
-    result = subprocess.run(
-        [sys.executable, str(VALIDATE_SCRIPT), str(output_path)],
-        capture_output=True, text=True,
-    )
-    print(result.stdout)
-    if result.stderr:
-        print("STDERR:", result.stderr)
-    if result.returncode != 0:
-        print("VALIDATION FAILED")
-        sys.exit(1)
-    print("Submission valid!")
+    if VALIDATE_SCRIPT.exists():
+        print("Validating submission ...")
+        result = subprocess.run(
+            [sys.executable, str(VALIDATE_SCRIPT), str(output_path)],
+            capture_output=True, text=True,
+        )
+        print(result.stdout)
+        if result.stderr:
+            print("STDERR:", result.stderr)
+        if result.returncode != 0:
+            print("VALIDATION FAILED")
+            sys.exit(1)
+        print("Submission valid!")
+    else:
+        print("validate_submission.py not found — skipping in-container validation.")
     print(f"Output: {output_path}")
 
 

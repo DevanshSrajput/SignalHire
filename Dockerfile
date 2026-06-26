@@ -9,6 +9,8 @@ RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTr
 
 COPY . .
 
+RUN mkdir -p /app/data /app/output
+
 EXPOSE 8501
 
 # Sandbox default: produce the ranked submission.

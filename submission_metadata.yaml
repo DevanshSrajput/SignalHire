@@ -1,0 +1,78 @@
+# Redrob Hackathon — Submission Metadata
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "SignalHire"
+
+primary_contact:
+  name: "Devansh Rajput"
+  email: "rachitmittalxc@gmail.com"
+  phone: "+91-6203454887"
+
+team_members:
+  - name: "Devansh Rajput"
+    email: "rachitmittalxc@gmail.com"
+    role: "Team Lead"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/DevanshSrajput/SignalHire"
+
+sandbox_link: "https://huggingface.co/spaces/DevanshSrajput/SignalHire"
+
+reproduce_command: "python rank.py"
+# rank.py reads candidates from data/candidates.jsonl (mount or copy there)
+# and writes output/submission.csv. Precomputed artifacts are baked into
+# the Docker image — no network or GPU needed at ranking time.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Linux x86_64"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.10"
+  os: "Ubuntu 22.04 LTS"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 30   # GPU: ~4 min; CPU: ~30 min
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "Claude"
+
+ai_usage_summary: |
+  Used Claude for architecture discussion, code review, and debugging.
+  No candidate data was fed to any LLM. All scoring logic, weights, and
+  disqualification rules are original work.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  SignalHire ranks 100K candidates via a five-signal composite score:
+  Technical Fit (0.35), Career Quality (0.25), Availability Signal (0.20),
+  Seniority Fit (0.12), and Semantic Similarity (0.08). Embeddings are
+  precomputed offline with all-MiniLM-L6-v2; ranking is a single matrix
+  multiply at inference time (<1s). A disqualification layer hard-removes
+  honeypots (claimed YoE exceeds career timeline), ghost profiles, and
+  pure-research candidates before scoring. Soft penalties apply for
+  all-consulting careers, no-code-18mo, and CV/robotics-only profiles.
+  Evidence-cited per-candidate reasoning cites the exact skill or sentence
+  that triggered each score component.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true

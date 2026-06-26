@@ -4,9 +4,10 @@
 > Built for the Redrob AI Challenge (India Runs Hackathon).
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?logo=python)]()
-[![CUDA 13](https://img.shields.io/badge/CUDA-13-green?logo=nvidia)]()
+[![GPU Optional](https://img.shields.io/badge/GPU-optional%20(EMBEDDING__DEVICE%3Dcuda)-green?logo=nvidia)]()
 [![sentence-transformers](https://img.shields.io/badge/sentence--transformers-all--MiniLM--L6--v2-orange)]()
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B?logo=streamlit)]()
+[![HF Space](https://img.shields.io/badge/🤗%20Live%20Demo-DevanshSrajput%2FSignalHire-yellow)](https://huggingface.co/spaces/DevanshSrajput/SignalHire)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)]()
 
 📚 **[Full Documentation](https://devanshsrajput.github.io/SignalHire/)**
@@ -75,7 +76,7 @@ Click the thumbnail above to watch the walkthrough on YouTube.
           │                                      │
           │  Load artifacts ─► Cosine similarity │
           │         └──► Weighted composite      │
-          │         └──► argpartition → top 100  │
+          │         └──► argsort → top 100        │
           │         └──► Evidence-based reasoning│
           │         └──► Validate & write CSV    │
           └──────────────┬───────────────────────┘
@@ -94,7 +95,7 @@ Click the thumbnail above to watch the walkthrough on YouTube.
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 
-# Precompute (GPU recommended)
+# Precompute (CPU by default; add EMBEDDING_DEVICE=cuda for GPU)
 python precompute.py
 
 # Rank & generate submission
@@ -109,7 +110,7 @@ streamlit run app.py
 | Requirement | Notes |
 |---|---|
 | Python ≥ 3.10 | |
-| NVIDIA GPU + CUDA | Optional — speeds precompute ~10×. Set `EMBEDDING_DEVICE = "cpu"` in `config.py` without one. |
+| NVIDIA GPU + CUDA | Optional — speeds precompute ~10×. CPU is the default; set `EMBEDDING_DEVICE=cuda python precompute.py` to use GPU. |
 | Disk | ~500 MB for data + ~160 MB for generated artifacts |
 | RAM | 16 GB recommended |
 
@@ -163,11 +164,22 @@ precomputed artifacts.
 ### Docker
 
 ```bash
+# Build — bakes precomputed artifacts into the image
 docker build -t signalhire .
-docker run --rm -v $(pwd)/data:/app/data -v $(pwd)/output:/app/output signalhire python rank.py
+
+# Rank (mount candidates.jsonl in, get submission.csv out)
+docker run --rm \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/output:/app/output \
+  signalhire
+
+# Dashboard
+docker run --rm -p 8501:8501 \
+  -v $(pwd)/data:/app/data \
+  signalhire streamlit run app.py --server.port=8501 --server.address=0.0.0.0
 ```
 
-> The image pre-downloads the embedding model. Add `--gpus all` for GPU.
+> Precomputed artifacts are baked into the image — no GPU needed at runtime. The image pre-downloads the embedding model at build time.
 
 ---
 
@@ -317,11 +329,12 @@ SignalHire/
 ├── 📁 output/
 │   └── submission.csv        # Final validated output
 │
-├── 📄 Documentation.md       # Complete project documentation
-├── 📁 Initial-Documentation/ # Original planning docs (PRD, TRD, etc.)
+├── 📄 Documentation.md         # Complete project documentation
+├── 📁 Initial-Documentation/   # Original planning docs (PRD, TRD, etc.)
+├── 📄 submission_metadata.yaml # Hackathon submission metadata (team, sandbox link, approach)
 ├── requirements.txt
 ├── Dockerfile
-└── GOOD_FIRST_ISSUES.md      # Starter tasks for contributors
+└── GOOD_FIRST_ISSUES.md        # Starter tasks for contributors
 ```
 
 ---
@@ -332,8 +345,8 @@ SignalHire/
 
 ```csv
 candidate_id,rank,score,reasoning
-CAND_0081846,1,0.870,"6.7yr Lead AI Engineer at Razorpay; strong match on embeddings, vector search, python, information retrieval; production evidence (serving, ndcg); actively looking, 73% response rate, 30d notice."
-CAND_0055905,2,0.869,"8.1yr Senior Machine Learning Engineer at Flipkart; strong match on embeddings, vector search, python, information retrieval; production evidence (deployed, serving); actively looking, 87% response rate."
+CAND_0081846,1,8.70,"6.7yr Lead AI Engineer at Razorpay; strong match on embeddings, vector search, python, information retrieval; production evidence (serving, ndcg); actively looking, 73% response rate, 30d notice."
+CAND_0055905,2,8.69,"8.1yr Senior Machine Learning Engineer at Flipkart; strong match on embeddings, vector search, python, information retrieval; production evidence (deployed, serving); actively looking, 87% response rate."
 ```
 
 **Validation rules:**
@@ -354,7 +367,7 @@ CAND_0055905,2,0.869,"8.1yr Senior Machine Learning Engineer at Flipkart; strong
 | **CPU-only ranking** | Phase B uses NumPy — no GPU dependency |
 | **16 GB RAM** | Streaming JSONL, batched embedding, vectorized ops |
 | **No network** | Model pre-downloaded at build time |
-| **<5 min ranking** | `np.argpartition` O(N) + byte-offset seek index |
+| **<5 min ranking** | `np.argsort` + byte-offset seek index; ~3 s on CPU |
 
 ---
 

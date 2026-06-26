@@ -56,7 +56,7 @@ def compute_scores(
 def top_k_indices(scores: np.ndarray, k: int) -> np.ndarray:
     """Indices of the top-k scores, ordered best-first (deterministic ties)."""
     k = min(k, len(scores))
-    idx = np.argpartition(-scores, k - 1)[:k]
+    idx = np.argsort(-scores)[:k]
     return idx[np.lexsort((idx, -np.round(scores[idx], 3)))]
 
 
@@ -127,7 +127,7 @@ def stability_analysis(
             subscore_matrix @ w[:4].astype(np.float32)
             + np.float32(w[4]) * semantic_sim
         )
-        for i in np.argpartition(-scores, k - 1)[:k]:
+        for i in np.argsort(-scores)[:k]:
             counts[int(i)] = counts.get(int(i), 0) + 1
 
     return {i: c / n_trials for i, c in counts.items()}
